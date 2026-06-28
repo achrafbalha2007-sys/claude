@@ -788,4 +788,96 @@ ode[font=\tiny,align=center] at (3,4.4)
   \vspace{0.6cm}
   \begin{center}\Large\textcolor{verre}{Merci de votre attention.}\end{center}
 \end{frame}
+\begin{frame}[fragile,allowframebreaks]{Annexe --- Code Python}
+\tiny
+\begin{verbatim}
+# -*- coding: utf-8 -*-
+# TIPE - Modele SIMPLIFIE (poutre 1D)
+# Probabilite de rupture par Monte-Carlo.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(2026)
+
+# --- constantes (verre trempe + smartphone) ---
+E, G = 73e9, 9.81          # module d'Young (Pa), pesanteur
+M_PHONE = 0.18             # masse du telephone (kg)
+ETA = 0.05                 # fraction d'energie stockee en flexion
+B = 0.020                  # largeur de la bande de verre (m)
+SIG_MU, SIG_SD = 850e6, 120e6   # seuil de rupture gaussien (Pa)
+KAPPA = 0.7                # surcontrainte au coin
+L_C, L_B = 0.050, 0.025    # portee effective : centre / coin (m)
+E0 = 0.5e-3                # epaisseur uniforme de reference (m)
+N_MC = 5000
+
+# --- profils d'epaisseur e(r), r de 0 (centre) a 1 (bord) ---
+def uniforme(r, e0=E0):
+    return np.full_like(np.asarray(r, float), e0)
+
+def parabolique(r, e_c=0.5e-3, e_b=1.2e-3):
+    return e_c + (e_b - e_c) * np.asarray(r, float) ** 2
+
+def exponentiel(r, e_c=0.5e-3, e_b=1.2e-3):
+    return e_c * np.exp(np.log(e_b / e_c) * np.asarray(r, float))
+
+def epaisseur_moyenne(prof, **kw):
+    r = np.linspace(0, 1, 400)
+    return np.trapz(prof(r, **kw) * 2 * r, r) / np.trapz(2 * r, r)
+
+# --- coeur du modele : contrainte de flexion (poutre 1D) ---
+def contrainte(e, L, Ek, Kc):
+    I = B * e ** 3 / 12.0           # moment quadratique (RDM)
+    k = 48.0 * E * I / L ** 3       # raideur poutre : k ~ e^3
+    x = np.sqrt(2.0 * ETA * Ek / k) # 1/2 k x^2 = eta Ek -> fleche max
+    return 6.0 * E * e * x / L ** 2 * Kc
+
+def gauss_tronquee(mu, s, lo, hi, n):
+    out = np.empty(n); k = 0
+    while k < n:
+        x = rng.normal(mu, s, n - k); x = x[(x >= lo) & (x <= hi)]
+        out[k:k + x.size] = x; k += x.size
+    return out
+
+def monte_carlo(prof, N=N_MC, **kw):
+    theta = gauss_tronquee(65, 15, 10, 90, N)     # angle de chute (deg)
+    h = gauss_tronquee(1.0, 0.25, 0.30, 2.0, N)   # hauteur (m)
+    v = np.sqrt(2 * G * h); Ek = 0.5 * M_PHONE * v ** 2
+    r = np.clip(theta / 90 + rng.normal(0, 0.05, N), 0, 1)
+    L = L_C - (L_C - L_B) * r                     # portee selon la zone
+    Kc = 1 + KAPPA * r                            # coin = surcontrainte
+    e = prof(r, **kw)
+    sigma = contrainte(e, L, Ek, Kc)
+    sigma_c = np.maximum(rng.normal(SIG_MU, SIG_SD, N), 1e6)
+    return (sigma > sigma_c).mean(), sigma
+
+def optimise():
+    emu = epaisseur_moyenne(uniforme)
+    ec_g = np.linspace(0.2e-3, 0.5e-3, 7)
+    eb_g = np.linspace(0.5e-3, 2.0e-3, 16)
+    P = np.full((ec_g.size, eb_g.size), np.nan); best = None
+    for i, ec in enumerate(ec_g):
+        for j, eb in enumerate(eb_g):
+            if eb < ec or epaisseur_moyenne(parabolique, e_c=ec, e_b=eb) > 2.5 * emu:
+                continue
+            p, _ = monte_carlo(parabolique, N=3000, e_c=ec, e_b=eb)
+            P[i, j] = p
+            if best is None or p < best[0]:
+                best = (p, ec, eb)
+    return ec_g, eb_g, P, best
+
+if __name__ == "__main__":
+    v1 = np.sqrt(2 * G * 1.0); Ek1 = 0.5 * M_PHONE * v1 ** 2
+    print("v=%.2f m/s  Ek=%.2f J" % (v1, Ek1))
+    for nom, f, kw in [("Uniforme", uniforme, {"e0": E0}),
+                       ("Parabolique", parabolique, {"e_c":0.5e-3,"e_b":1.2e-3}),
+                       ("Exponentiel", exponentiel, {"e_c":0.5e-3,"e_b":1.2e-3})]:
+        p, s = monte_carlo(f, **kw)
+        print(nom, "P=%.1f%%" % (p*100))
+    ec_g, eb_g, P, best = optimise()
+    print("Optimum P=%.1f%% ec=%.2fmm eb=%.2fmm"
+          % (best[0]*100, best[1]*1e3, best[2]*1e3))
+\end{verbatim}
+\end{frame}
+
 \end{document}
