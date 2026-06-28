@@ -1,0 +1,791 @@
+% =====================================================================
+%  PRESENTATION TIPE (Beamer) - Filiere MPSI/MP
+%  Modele poutre 1D. .
+%
+%  Compilation : pdflatex presentation_tipe.tex   (x2 pour la nav.)
+%  Les figures fig_poutre_*.png sont produites par simulation_poutre.py.
+%  Un cadre de substitution s'affiche tant qu'elles n'existent pas.
+% =====================================================================
+\documentclass[11pt,aspectratio=169]{beamer}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,patterns,shapes.geometric}
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
+
+\usetheme{Madrid}
+\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{caption}[numbered]
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing,
+                patterns,shapes.geometric,calc,backgrounds}
+
+% ---- couleurs ----
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
+\definecolor{gristik}{RGB}{120,120,120}
+
+% ---- raccourcis TikZ reutilisables ----
+% sol hachure
+\newcommand{\sol}[2]{% #1 xgauche  #2 xdroite
+  \draw[thick](#1,0)--(#2,0);
+  \foreach \xx in {#1,...,#2}{\draw[gristik](\xx,0)--(\xx-0.25,-0.25);}}
+% ressort horizontal entre (a) et (b)
+% smartphone (rectangle arrondi) centre en (#1) de demi-largeur 0.35 hauteur 0.7
+\newcommand{\phone}[3]{% #1 x  #2 y  #3 couleur
+  \draw[#3,fill=#3!12,thick,rounded corners=2pt]
+       (#1-0.32,#2-0.62) rectangle (#1+0.32,#2+0.62);
+  \draw[#3!60] (#1-0.24,#2-0.45) rectangle (#1+0.24,#2+0.45);}
+
+% inclusion robuste d'une figure de simulation
+\newcommand{\figauto}[3]{%
+  \IfFileExists{#1}{\includegraphics[width=#2\linewidth]{#1}}{%
+    \fcolorbox{gristik}{gray!8}{\parbox[c][3cm][c]{#2\linewidth}{\centering\footnotesize
+    \textit{[\texttt{#1} : lancer \texttt{simulation\_poutre.py}]}\\[2pt]#3}}}}
+
+% ---- page de titre ----
+\title[Écran en verre trempé]{Optimiser l'épaisseur d'un écran protecteur\\en verre trempé pour qu'il casse moins}
+\subtitle{Modèle « poutre »}
+\author{TIPE}
+\institute{Filière MPSI/MP}
+\date{2026-2027}
+
+\begin{document}
+
+
+
+% ===================== Slide 1 : titre =====================
+{\setbeamertemplate{footline}{}
+\begin{frame}[plain]
+  \titlepage
+  \vspace{-0.6cm}
+  \begin{center}
+  \begin{tikzpicture}[scale=0.9]
+    % telephone qui tombe vers un sol, ecran fissure
+    \sol{-1}{4}
+    \phone{1.5}{1.3}{verre}
+    \draw[-{Latex[length=3mm]},danger,very thick](1.5,2.4)--(1.5,2.0);
+    \node[danger] at (3.1,2.2){\footnotesize chute};
+    % petite fissure au coin
+    \draw[danger,thick](1.18,0.72)--(1.32,0.95)--(1.22,1.15)--(1.36,1.35);
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+}
+
+% ===================== Slide 2 : le constat =====================
+\begin{frame}{Le problème : ça casse,presque toujours au même endroit}
+  \begin{columns}[T]
+  \column{0.52\textwidth}
+    \begin{itemize}
+      \item Un smartphone tombe en moyenne plusieurs fois par an.
+      \item Les écrans en verre trempé sont durs\dots\ mais cassants.
+      \item Les fissures partent presque toujours d'un \textbf{coin} ou d'un \textbf{bord}.
+    \end{itemize}
+    \vspace{0.3cm}
+    \begin{block}{Intuition de départ}
+      Et si on mettait \textbf{plus de verre là où ça casse} (les bords)
+      et \textbf{moins au centre} (pour garder le toucher) ?
+    \end{block}
+  \column{0.46\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1.05]
+      \draw[verre,thick,fill=verre!8,rounded corners=4pt](0,0) rectangle (3,5);
+      % zone tactile centre
+      \draw[ok,dashed](1.5,2.5) circle (1);
+      \node[ok] at (1.5,2.5){\scriptsize zone tactile};
+      % fissures aux coins
+      \foreach \x/\y in {0.1/0.1, 2.9/0.1, 0.1/4.9, 2.9/4.9}{
+        \draw[danger,thick](\x,\y)
+          .. controls ($(\x,\y)+(0.4,0.3)$) .. ($(\x,\y)+(0.7,0.7)$);}
+      \node[danger] at (1.5,-0.45){\scriptsize fissures aux coins};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 3 : problematique =====================
+\begin{frame}{La question qui se pose:}
+  \begin{center}
+  \begin{beamercolorbox}[wd=0.92\textwidth,sep=10pt,rounded=true,shadow=true]{block body}
+  \centering\large
+  \textbf{Quel profil d'épaisseur de l'écran rend la rupture\\
+  la moins probable lors d'une chute,}\\[4pt]
+  \normalsize tout en gardant un centre fin ($\le 0{,}5$~mm) pour le toucher
+  et une masse raisonnable ?
+  \end{beamercolorbox}
+  \end{center}
+  \vspace{0.4cm}
+  \begin{center}
+  \begin{tikzpicture}[scale=1]
+    % trois coupes d'ecran : uniforme / parabolique / expo
+    \begin{scope}
+      \draw[verre,fill=verre!15](0,0) rectangle (2.4,0.4);
+      \node at (1.2,-0.35){\scriptsize uniforme ?};
+    \end{scope}
+    \begin{scope}[xshift=3.3cm]
+      \fill[verre!15] (0,0) .. controls (1.2,0.55) .. (2.4,0)
+                       -- (2.4,0.18) .. controls (1.2,0.6) .. (0,0.18) -- cycle;
+      \draw[verre] (0,0.18) .. controls (1.2,0.6) .. (2.4,0.18);
+      \draw[verre] (0,0)--(2.4,0);
+      \node at (1.2,-0.35){\scriptsize  plus épais au centre ?};
+    \end{scope}
+    \begin{scope}[xshift=6.6cm]
+      \fill[verre!15] (0,0) rectangle (2.4,0.2);
+      \fill[verre!15] (0,0.2) .. controls (1.2,0.0) .. (2.4,0.2) -- (2.4,0.2)--(0,0.2);
+      \draw[verre](0,0.6)--(0,0.2) (2.4,0.6)--(2.4,0.2);
+      \draw[verre](0,0.6) .. controls (1.2,0.2) .. (2.4,0.6);
+      \draw[verre](0,0)--(2.4,0);
+      \node at (1.2,-0.35){\scriptsize  plus épais aux bords ?};
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% ===================== Slide 4 : la demarche =====================
+\begin{frame}{Notre démarche en une image}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.5cm and 0.7cm,
+      box/.style={draw,rounded corners,fill=verre!10,align=center,
+                  minimum height=1.1cm,text width=2.5cm,font=\footnotesize},
+      ar/.style={-{Latex},thick,verre}]
+    \node[box](m){\textbf{1. Modèle}\\ poutre + énergie\\ $\sigma \propto 1/\sqrt{e}$};
+    \node[box,right=of m](v){\textbf{2. Validation}\\ analogie circuit RLC};
+    \node[box,right=of v](s){\textbf{3. Simulation}\\ Monte-Carlo\\ $P(\text{rupture})$};
+    \node[box,right=of s](e){\textbf{4. Expérience}\\ son + FFT\\ carte de rigidité};
+    \draw[ar](m)--(v); \draw[ar](v)--(s); \draw[ar](s)--(e);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.3cm}
+  \centering\small Un seul fil conducteur : \textcolor{verre}{comprendre} $\rightarrow$
+  \textcolor{verre}{vérifier} $\rightarrow$ \textcolor{verre}{quantifier} $\rightarrow$
+  \textcolor{verre}{tester}.
+\end{frame}
+
+
+% ===================== Slide 5 : la chute =====================
+\begin{frame}{Étape 1 --- La chute donne de l'énergie}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \begin{tikzpicture}[scale=1]
+      \draw[-{Latex}](0,5)--(0,-0.2) node[right]{};
+      \node at (-0.35,2.5){\rotatebox{90}{\footnotesize hauteur $h$}};
+      \phone{1.6}{4.2}{verre}
+      \draw[-{Latex[length=2.5mm]},danger,thick](1.6,3.4)--(1.6,2.6)
+            node[midway,right]{\footnotesize $v$};
+      \phone{1.6}{0.7}{gristik}
+      \sol{0.4}{3}
+      \draw[{Latex}-{Latex}](0.15,0)--(0.15,4.2) node[midway,left]{};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \begin{block}{Mécanique du point (au programme)}
+    Chute libre d'une hauteur $h$ :
+    \[ v=\sqrt{2gh} \]
+    Énergie cinétique juste avant l'impact :
+    \[ E_c=\tfrac12\,m\,v^{2}=m\,g\,h \]
+    \end{block}
+    \footnotesize\textbf{Exemple :} $h=1$~m $\Rightarrow v\approx 4{,}4$~m/s,
+    $E_c\approx 1{,}8$~J pour $m=180$~g.\\[4pt]
+    \textcolor{danger}{Toute cette énergie doit être « encaissée » en un instant.}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 6 : le verre = un ressort =====================
+\begin{frame}{Étape 2 --- Le verre se comporte comme un ressort}
+  \begin{columns}[c]
+  \column{0.46\textwidth}
+    \begin{tikzpicture}[scale=1]
+      % mur
+      \draw[thick](0,-0.2)--(0,2.2);
+      \foreach \yy in {-0.1,0.2,...,2.1}{\draw[gristik](0,\yy)--(-0.25,\yy-0.2);}
+      % ressort
+      \draw[decorate,decoration={coil,aspect=0.6,segment length=4pt,amplitude=4pt},verre,thick]
+            (0,1)--(2.2,1);
+      % masse
+      \draw[fill=verre!15,thick](2.2,0.4) rectangle (3.2,1.6);
+      \node at (2.7,1){\footnotesize $m$};
+      \draw[-{Latex},danger,thick](3.3,1)--(4.0,1) node[right]{\footnotesize $x$};
+    \end{tikzpicture}
+  \column{0.54\textwidth}
+    \begin{itemize}
+      \item Sous le choc, l'écran fléchit puis revient : c'est un
+            \textbf{oscillateur}.
+      \item Il stocke une énergie élastique :
+      \[ E_{\text{stockée}}=\tfrac12\,k\,x^{2} \]
+      \item $k$ = \textbf{raideur} de l'écran (sa « dureté à plier »),
+            $x$ = fléche (de combien il s'enfonce).
+    \end{itemize}
+    \vspace{0.2cm}
+    \centering\footnotesize\textcolor{verre}{Tout le problème : relier $k$ et $x$
+    à l'épaisseur $e$.}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 7 : modele poutre 1D =====================
+\begin{frame}{Étape 3 --- On modélise l'écran par une \emph{poutre}}
+  \begin{columns}[c]
+  \column{0.54\textwidth}
+    \begin{tikzpicture}[scale=1]
+      % appuis
+      \fill[gristik](0,0)--(-0.3,-0.4)--(0.3,-0.4)--cycle;
+      \fill[gristik](5,0)--(4.7,-0.4)--(5.3,-0.4)--cycle;
+      % poutre droite (pointilles) et flechie
+      \draw[gristik,dashed](0,0)--(5,0);
+      \draw[verre,very thick](0,0) .. controls (2.5,-1.1) .. (5,0);
+      % charge
+      \draw[-{Latex[length=2.5mm]},danger,thick](2.5,1)--(2.5,-0.5)
+            node[midway,right]{\footnotesize $F$ (choc)};
+      % fleche
+      \draw[{Latex}-{Latex}](5.4,0)--(5.4,-0.85) node[midway,right]{\footnotesize $x$};
+      % portee
+      \draw[{Latex}-{Latex}](0,-0.7)--(5,-0.7) node[midway,below]{\footnotesize portée $L$};
+    \end{tikzpicture}
+  \column{0.46\textwidth}
+    \begin{block}{Simplification clé (1D)}
+    On remplace la plaque (2D) par une \textbf{poutre sur deux appuis}
+    qui se courbe dans \emph{une} seule direction.
+    \end{block}
+    \footnotesize
+    \begin{itemize}
+      \item Beaucoup plus simple : c'est de la \textbf{RDM de base}.
+      \item On garde l'essentiel : comment $k$ dépend de $e$.
+      \item On surestime un peu $\sigma$ $\Rightarrow$ choix
+            \textcolor{ok}{prudent}.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 8 : raideur ~ e^3 =====================
+\begin{frame}{Étape 4 --- Plus c'est épais, beaucoup plus c'est rigide}
+  \begin{columns}[c]
+  \column{0.4\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      % section rectangulaire b x e
+      \draw[verre,thick,fill=verre!12](0,0) rectangle (2.2,0.7);
+      \draw[{Latex}-{Latex}](0,-0.25)--(2.2,-0.25) node[midway,below]{\footnotesize largeur $b$};
+      \draw[{Latex}-{Latex}](2.45,0)--(2.45,0.7) node[midway,right]{\footnotesize épaisseur $e$};
+      \node at (1.1,1.2){\footnotesize section de la poutre};
+    \end{tikzpicture}
+  \column{0.6\textwidth}
+    \begin{block}{RDM : moment quadratique et raideur}
+    \[ I=\frac{b\,e^{3}}{12} \qquad
+       k=\frac{48\,E\,I}{L^{3}}=\frac{4\,E\,b}{L^{3}}\;e^{3} \]
+    \end{block}
+    \begin{center}
+    \fbox{\textcolor{verre}{$\;k \propto e^{3}\;$}}\quad
+    \footnotesize doubler l'épaisseur $\Rightarrow$ raideur $\times 8$ !
+    \end{center}
+    \footnotesize $E$ : rigidité du verre (module d'Young, $\approx 73$~GPa).
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 9 : energie -> fleche =====================
+\begin{frame}{Étape 5 --- De l'énergie à la fléche}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \begin{tikzpicture}[scale=0.95]
+      % barre energie chute
+      \draw[fill=danger!25](0,0) rectangle (1,3);
+      \node[align=center] at (0.5,-0.4){\scriptsize énergie\\\scriptsize de chute $E_c$};
+      \draw[-{Latex},thick](1.3,1.5)--(2.6,1.5) node[midway,above]{\scriptsize fraction $\eta$};
+      % barre energie flexion
+      \draw[fill=verre!30](2.9,0) rectangle (3.9,1.0);
+      \node[align=center] at (3.4,-0.4){\scriptsize énergie\\\scriptsize de flexion};
+      % reste
+      \node[align=left,gristik] at (5.6,1.8){\scriptsize le reste :\\\scriptsize rebond, son,\\\scriptsize corps du tél.};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \begin{block}{Conservation de l'énergie}
+    Une fraction $\eta$ de l'énergie de chute sert à plier le verre :
+    \[ \tfrac12\,k\,x_{\max}^{2}=\eta\,E_c
+       \;\Rightarrow\; x_{\max}=\sqrt{\dfrac{2\,\eta\,E_c}{k}} \]
+    \end{block}
+    \footnotesize
+    \textcolor{danger}{\textbf{Hypothèse à défendre :}} on \emph{admet}
+    $\eta\approx 5\%$ (le reste part en rebond, son, déformation du
+    téléphone). Cela évite le calcul compliqué du contact.
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 10 : fleche -> contrainte =====================
+\begin{frame}{Étape 6 --- De la fléche à la contrainte qui casse}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \begin{tikzpicture}[scale=1]
+      \draw[verre,very thick](0,0) .. controls (2,-1) .. (4,0);
+      % face du haut comprimee, face du bas tendue
+      \node[ok] at (2,0.35){\footnotesize compression (dessus)};
+      \draw[-{Latex},danger](0.6,-0.75)--(0.0,-0.95);
+      \draw[-{Latex},danger](3.4,-0.75)--(4.0,-0.95);
+      \node[danger] at (2,-1.15){\footnotesize traction (dessous) $\rightarrow$ c'est ici que ça casse};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \begin{block}{Contrainte de flexion (RDM)}
+    \[ \sigma_{\max}=\frac{6\,E\,e}{L^{2}}\;x_{\max} \]
+    \end{block}
+    \footnotesize Le verre casse en \textbf{traction}, sur la face opposée
+    au choc. Plus la fléche $x_{\max}$ est grande, plus $\sigma_{\max}$ est
+    grande.
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 11 : resultat cle sigma ~ 1/sqrt(e) =====================
+\begin{frame}{Le résultat central : $\boxed{\sigma_{\max}\propto 1/\sqrt{e}}$}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    En combinant les étapes 4, 5 et 6 :
+    \[ \sigma_{\max}=\frac{6Ee}{L^2}\sqrt{\frac{2\eta E_c}{k}},
+       \quad k\propto e^{3} \]
+    \[ \Rightarrow\quad \sigma_{\max}\;\propto\;\frac{1}{\sqrt{e}} \]
+    \vspace{0.2cm}
+    \begin{beamercolorbox}[sep=6pt,rounded=true]{block body}
+    \centering\textbf{Épaissir localement $\Rightarrow$ moins de contrainte
+    $\Rightarrow$ moins de casse.}
+    \end{beamercolorbox}
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      \draw[-{Latex}](0,0)--(4.2,0) node[right]{\footnotesize $e$};
+      \draw[-{Latex}](0,0)--(0,3.2) node[above]{\footnotesize $\sigma_{\max}$};
+      \draw[verre,very thick,domain=0.4:4,samples=60,smooth]
+            plot (\x,{1.6/sqrt(\x)});
+      \draw[danger,dashed](0,1.1)--(4,1.1) node[right]{\footnotesize seuil};
+      \node[verre] at (2.6,1.9){\footnotesize $1/\sqrt{e}$};
+    \end{tikzpicture}
+    \\[2pt]\footnotesize même conclusion que le modèle « plaque », en bien plus simple.
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 12 : critere de rupture =====================
+\begin{frame}{Quand est-ce que ça casse ?}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \begin{block}{Critère simple}
+    Le verre casse si la contrainte dépasse un \textbf{seuil} $\sigma_c$ :
+    \[ \sigma_{\max} > \sigma_c \;\Rightarrow\; \text{rupture} \]
+    \end{block}
+    \footnotesize
+    \begin{itemize}
+      \item Le verre est \textbf{fragile} : pas de déformation prévenante.
+      \item Le seuil $\sigma_c$ n'est pas fixe : il \textbf{varie} d'un point
+            à l'autre (micro-défauts). On le modélise par une loi
+            \textbf{gaussienne} (au programme) autour de $\approx 850$~MPa.
+    \end{itemize}
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      \draw[-{Latex}](-0.2,0)--(4.4,0) node[right]{\footnotesize $\sigma$};
+      \draw[-{Latex}](0,0)--(0,2.6);
+      % gaussienne du seuil
+      \draw[verre,thick,domain=0.4:4,samples=80,smooth]
+        plot (\x,{2*exp(-(\x-2.4)*(\x-2.4)/0.35)});
+      \node[verre] at (2.4,2.25){\footnotesize seuil $\sigma_c$};
+      % contrainte appliquee
+      \draw[danger,very thick](1.5,0)--(1.5,2.2) node[above]{\footnotesize $\sigma_{\max}$};
+      \fill[danger!20,domain=0.4:1.5,samples=40] plot (\x,{2*exp(-(\x-2.4)*(\x-2.4)/0.35)})
+            -- (1.5,0) -- (0.4,0) -- cycle;
+      \node[danger,align=center] at (0.95,-0.55){\scriptsize P(casse)};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+
+% ===================== Slide 13 : les 3 profils =====================
+\begin{frame}{Les trois profils que l'on compare}
+  \begin{center}
+  \begin{tikzpicture}[scale=1]
+    % uniforme
+    \begin{scope}
+      \draw[verre,thick,fill=verre!12](0,0) rectangle (3,0.45);
+      \node at (1.5,1.0){\footnotesize \textbf{Uniforme}};
+      \node at (1.5,-0.4){\scriptsize $e(r)=e_0$};
+    \end{scope}
+    % parabolique (epais aux bords)
+    \begin{scope}[xshift=4cm]
+      \fill[verre!12] (0,0)--(3,0)--(3,0.75)
+        .. controls (1.5,0.15) .. (0,0.75) -- cycle;
+      \draw[verre,thick](0,0.75) .. controls (1.5,0.15) .. (3,0.75);
+      \draw[verre,thick](0,0)--(3,0)--(3,0.75) (0,0)--(0,0.75);
+      \node at (1.5,1.25){\footnotesize \textbf{Parabolique}};
+      \node at (1.5,-0.4){\scriptsize $e(r)=e_c+(e_b-e_c)\,r^2$};
+    \end{scope}
+    % exponentiel
+    \begin{scope}[xshift=8cm]
+      \fill[verre!12] (0,0)--(3,0)--(3,0.9)
+        .. controls (2.2,0.2) and (1.0,0.12) .. (0,0.28) -- cycle;
+      \draw[verre,thick](0,0.28) .. controls (1.0,0.12) and (2.2,0.2) .. (3,0.9);
+      \draw[verre,thick](0,0)--(3,0)--(3,0.9) (0,0)--(0,0.28);
+      \node at (1.5,1.25){\footnotesize \textbf{Exponentiel}};
+      \node at (1.5,-0.4){\scriptsize $e(r)=e_c\,e^{\alpha r}$};
+    \end{scope}
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.5cm}
+  \centering $r$ = distance au centre (0 = centre, 1 = bord). \quad
+  Contrainte : centre fin ($e_c\le 0{,}5$~mm), masse $\le 2{,}5\times$ l'uniforme.
+\end{frame}
+
+% ===================== Slide 14 : pourquoi epaissir les bords =====================
+\begin{frame}{Pourquoi épaissir surtout les \emph{bords} ?}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      % impact au centre : grande portee
+      \fill[gristik](0,2.2)--(-0.25,1.9)--(0.25,1.9)--cycle;
+      \fill[gristik](4,2.2)--(3.75,1.9)--(4.25,1.9)--cycle;
+      \draw[verre,very thick](0,2.2) .. controls (2,1.7) .. (4,2.2);
+      \draw[-{Latex},danger](2,3)--(2,2.1);
+      \node at (2,3.25){\scriptsize impact \textbf{centre} : grande portée $\Rightarrow$ souple};
+      % impact au coin : petite portee
+      \fill[gristik](0,0.4)--(-0.2,0.15)--(0.2,0.15)--cycle;
+      \fill[gristik](1.4,0.4)--(1.2,0.15)--(1.6,0.15)--cycle;
+      \draw[verre,very thick](0,0.4) .. controls (0.7,0.0) .. (1.4,0.4);
+      \draw[-{Latex},danger](0.7,1.1)--(0.7,0.35);
+      \node[align=center] at (2.7,0.55){\scriptsize impact \textbf{coin} : petite portée\\\scriptsize $\Rightarrow$ très contraint};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \begin{itemize}
+      \item Au \textbf{coin}, l'écran est tenu sur une petite portée
+            $\Rightarrow$ la contrainte y est la plus forte.
+      \item C'est exactement là que les fissures démarrent en pratique.
+      \item Donc : \textcolor{verre}{\textbf{mettre la matière aux bords}}
+            et garder le centre fin pour le toucher.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 15 : principe Monte-Carlo =====================
+\begin{frame}{Étape « simulation » --- la méthode de Monte-Carlo}
+  \begin{center}
+  \begin{tikzpicture}[node distance=0.55cm and 0.8cm,
+      box/.style={draw,rounded corners,fill=verre!10,align=center,
+                  font=\scriptsize,text width=2.3cm,minimum height=1cm},
+      ar/.style={-{Latex},thick,verre}]
+    \node[box](t){\textbf{Tirer} au hasard\\ une chute\\ (hauteur, angle)};
+    \node[box,right=of t](c){\textbf{Calculer}\\ $\sigma_{\max}$\\ (modèle poutre)};
+    \node[box,right=of c](r){\textbf{Comparer}\\ au seuil $\sigma_c$\\ casse ? oui/non};
+    \node[box,right=of r](n){\textbf{Répéter}\\ $N=5000$ fois};
+    \node[box,right=of n,fill=ok!15](p){$P=\dfrac{\text{casses}}{N}$};
+    \draw[ar](t)--(c);\draw[ar](c)--(r);\draw[ar](r)--(n);\draw[ar](n)--(p);
+    \draw[ar,gristik](n.south)+(0,-0.1) .. controls (0,-1.2) and (-6,-1.2) .. (t.south);
+  \end{tikzpicture}
+  \end{center}
+  \vspace{0.3cm}
+  \centering\footnotesize On simule des \textbf{milliers de chutes} et on compte
+  la proportion qui casse : c'est l'estimation de $P(\text{rupture})$.
+\end{frame}
+
+% ===================== Slide 16 : angles realistes =====================
+\begin{frame}{On tire des angles \emph{réalistes}, pas au hasard uniforme}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item Un téléphone tombe rarement parfaitement à plat.
+      \item On tire l'angle d'impact selon une \textbf{gaussienne}
+            centrée à $\mathbf{65^\circ}$ (souvent sur la tranche / le coin).
+      \item Ce sont justement les chutes les plus dangereuses.
+    \end{itemize}
+    \vspace{0.2cm}
+    \centering
+    \begin{tikzpicture}[scale=0.7]
+      \phone{0}{0}{verre}\node at (0,-1){\scriptsize $\approx 0^\circ$ (plat)};
+      \begin{scope}[xshift=2.5cm,rotate=45]\phone{0}{0}{verre}\end{scope}
+      \node at (2.5,-1){\scriptsize $\approx 45^\circ$};
+      \begin{scope}[xshift=5cm,rotate=80]\phone{0}{0}{danger}\end{scope}
+      \node[danger] at (5,-1){\scriptsize $\approx 80^\circ$ (coin)};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      \draw[-{Latex}](0,0)--(4.6,0) node[right]{\footnotesize angle ($^\circ$)};
+      \draw[-{Latex}](0,0)--(0,2.8);
+      \draw[verre,very thick,domain=0.2:4.4,samples=80,smooth]
+        plot (\x,{2.3*exp(-(\x-2.9)*(\x-2.9)/0.7)});
+      \draw[danger,dashed](2.9,0)--(2.9,2.3);
+      \node[danger] at (2.9,-0.35){\footnotesize $65^\circ$};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 17 : resultats =====================
+\begin{frame}{Résultats : le profil change tout}
+  \begin{columns}[c]
+  \column{0.55\textwidth}
+    \begin{center}
+    \begin{tikzpicture}[yscale=0.042,xscale=1.05]
+      \draw[-{Latex}](0,0)--(0,70) node[above,font=\scriptsize]{$P$ (\%)};
+      \draw(0,0)--(5.1,0);
+      \foreach \y in {0,20,40,60}{
+        \draw(0,\y)--(-0.12,\y) node[left,font=\tiny]{\y};
+        \draw[gray!25](0,\y)--(5.1,\y);}
+      \fill[danger!70](0.4,0) rectangle (1.4,59);
+      \fill[ok!70](2.0,0) rectangle (3.0,13);
+      \fill[verre!70](3.6,0) rectangle (4.6,10);
+      
+ode[font=\tiny] at (0.9,64){59\%};
+      
+ode[font=\tiny] at (2.5,18){13\%};
+      
+ode[font=\tiny] at (4.1,15){10\%};
+      
+ode[font=\tiny,below] at (0.9,0){Uniforme};
+      
+ode[font=\tiny,below] at (2.5,0){Parabol.};
+      
+ode[font=\tiny,below] at (4.1,0){Expon.};
+      
+ode[font=\scriptsize] at (2.5,78){Risque de casse par profil};
+    \end{tikzpicture}
+    \end{center}
+  \column{0.45\textwidth}
+    \small
+    \begin{tabular}{lc}
+    \hline
+    Profil & $P(\text{rupture})$ \\
+    \hline
+    Uniforme $0{,}5$~mm & $\approx 59\%$ \\
+    Parabolique ($0{,}5\!\to\!1{,}2$) & $\approx 13\%$ \\
+    Exponentiel & $\approx 10\%$ \\
+    \hline
+    \end{tabular}
+    \vspace{0.3cm}
+    \begin{beamercolorbox}[sep=5pt,rounded=true]{block body}
+    \centering\footnotesize À centre identique, épaissir les bords
+    \textbf{divise par 4 à 5} le risque de casse.
+    \end{beamercolorbox}
+    \footnotesize\textit{(valeurs de simulation, $N=5000$, ordres de grandeur)}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 18 : optimisation =====================
+\begin{frame}{Étape « optimisation » --- le meilleur compromis}
+  \begin{columns}[c]
+  \column{0.55\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.62]
+      % --- carte de chaleur P(e_c, e_b) dessinee en TikZ ---
+      \foreach \i in {0,...,5}{
+        \foreach \j in {0,...,3}{
+          \pgfmathtruncatemacro\P{55 - \i*9 - \j*2}
+          \pgfmathtruncatemacro\g{max(0,min(100,\P*1.6))}
+          \fill[red!\g!green!88] (\i,\j) rectangle ++(1,1);
+          
+ode[font=\tiny,white] at (\i+0.5,\j+0.5){\P};
+        }
+      }
+      \draw[step=1,gray!60,thin](0,0) grid (6,4);
+      % zone interdite par la masse (coin haut-droit)
+      \fill[pattern=north east lines,pattern color=black](5,3) rectangle (6,4);
+      
+ode[font=\tiny,align=center] at (5.5,3.5){};
+      % optimum
+      
+ode[star,star points=5,star point ratio=2.2,fill=yellow,draw=black,
+            scale=0.7] (opt) at (5.5,2.5){};
+      
+ode[font=\tiny,below=1pt of opt]{optimum};
+      % axes
+      \foreach \i/\lab in {0/0.5,1/0.8,2/1.1,3/1.4,4/1.7,5/2.0}{
+        
+ode[font=\tiny,below] at (\i+0.5,0){\lab};}
+      
+ode[font=\scriptsize,below] at (3,-0.55){$e_b$ (bord, mm)};
+      \foreach \j/\lab in {0/0.2,1/0.3,2/0.4,3/0.5}{
+        
+ode[font=\tiny,left] at (0,\j+0.5){\lab};}
+      
+ode[font=\scriptsize,rotate=90] at (-1.0,2){$e_c$ (centre, mm)};
+      
+ode[font=\tiny,align=center] at (3,4.4)
+        {\textcolor{danger}{rouge = risque fort}\ \ \textcolor{ok}{vert = risque faible}\ \ (valeurs en \%)};
+    \end{tikzpicture}
+  \column{0.45\textwidth}
+    \small On cherche $(e_c,e_b)$ qui minimise $P$ sous deux contraintes :
+    \begin{itemize}\footnotesize
+      \item \textbf{toucher} : $e_c\le 0{,}5$~mm
+      \item \textbf{masse} : $\le 2{,}5\times$ l'uniforme
+    \end{itemize}
+    \vspace{0.2cm}
+    \begin{block}{Optimum trouvé}
+    \centering\footnotesize centre fin + bords épais ($e_b\approx 2$~mm)\\
+    $\Rightarrow P(\text{rupture})\approx 3\%$
+    \end{block}
+    \footnotesize Les deux contraintes sont \textbf{saturées} : c'est un vrai
+    compromis « sécurité contre masse ».
+  \end{columns}
+\end{frame}
+
+
+% ===================== Slide 19 : validation RLC =====================
+\begin{frame}{Validation par expérience --- l'analogie avec un circuit électrique}
+  \begin{columns}[c]
+  \column{0.46\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      \draw[thick](0,0)--(0,2)--(1,2);
+      % bobine
+      \draw[verre,thick,decorate,decoration={coil,segment length=4pt,amplitude=3pt}](1,2)--(2.2,2);
+      \node[verre] at (1.6,2.4){\scriptsize $L\leftrightarrow m$};
+      % resistance
+      \draw[thick](2.2,2)--(2.5,2);
+      \draw[danger,thick](2.5,1.85) rectangle (3.5,2.15);
+      \node[danger] at (3.0,2.45){\scriptsize $R\leftrightarrow c$};
+      \draw[thick](3.5,2)--(4.5,2)--(4.5,0);
+      % condensateur
+      \draw[thick](0,0)--(2,0); \draw[ok,thick](2,-0.3)--(2,0.3);
+      \draw[ok,thick](2.3,-0.3)--(2.3,0.3); \draw[thick](2.3,0)--(4.5,0);
+      \node[ok] at (2.15,-0.6){\scriptsize $C\leftrightarrow 1/k$};
+    \end{tikzpicture}
+  \column{0.54\textwidth}
+    \footnotesize Le ressort amorti et un circuit \textbf{RLC} obéissent à la
+    \emph{même équation}. On peut donc \textbf{mesurer} le comportement à
+    l'oscilloscope.
+    \begin{center}\scriptsize
+    \begin{tabular}{ll}
+    \hline
+    Mécanique & Électrique \\
+    \hline
+    masse $m$ & bobine $L$ \\
+    amortissement $c$ & résistance $R$ \\
+    raideur $k$ & $1/C$ \\
+    \hline
+    \end{tabular}
+    \end{center}
+    On vérifie : période $\propto\sqrt{C}$, image de $T\propto e^{-3/2}$.
+  \end{columns}
+\end{frame}
+
+
+% ===================== Slide 20 : limite 1D vs 2D =====================
+\begin{frame}{Limite 1 --- poutre (1D) ou plaque (2D) ?}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.9]
+      % poutre 1D
+      \draw[verre,very thick](0,2.6) .. controls (1.3,1.9) .. (2.6,2.6);
+      \draw(0,2.75)--(0,2.45)(2.6,2.75)--(2.6,2.45);
+      \node at (1.3,3.1){\scriptsize Poutre 1D : courbure 1 direction};
+      % plaque 2D : ondes concentriques
+      \draw(0,-0.2) rectangle (2.6,1.4);
+      \foreach \rr in {0.25,0.5,0.75,1.0}{\draw[verre](1.3,0.6) circle (\rr);}
+      \fill(1.3,0.6) circle (1pt);
+      \node at (1.3,-0.6){\scriptsize Plaque 2D : ondes dans 2 directions};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item Les particules bougent \textbf{perpendiculairement} à l'écran
+            (flexion), pas « en 2D ».
+      \item « 2D » = la déformation s'\textbf{étale sur la surface} (comme des
+            ronds dans l'eau).
+      \item La poutre ignore une direction $\Rightarrow$ elle
+            \textbf{surestime} un peu $\sigma$ (prudent).
+      \item Mais $k\propto e^3$ reste vrai $\Rightarrow$ \textbf{même
+            conclusion}.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 21 : limite fabrication =====================
+\begin{frame}{Limite 2 --- est-ce fabricable ?}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      % gradient continu (ideal)
+      \draw[verre,thick](0,0)--(3,0);
+      \draw[verre,thick](0,0.7) .. controls (1.5,0.1) .. (3,0.7);
+      \draw[verre](0,0)--(0,0.7)(3,0)--(3,0.7);
+      \node at (1.5,1.1){\scriptsize idéal : gradient continu};
+      % paliers (realiste)
+      \begin{scope}[yshift=-1.7cm]
+        \draw[ok,thick](0,0)--(3,0);
+        \draw[ok,thick](0,0.6)--(0.8,0.6)--(0.8,0.3)--(2.2,0.3)
+              --(2.2,0.6)--(3,0.6);
+        \draw[ok](0,0)--(0,0.6)(3,0)--(3,0.6);
+        \node at (1.5,1.0){\scriptsize réaliste : paliers (marches)};
+      \end{scope}
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item Un gradient \textbf{continu} est difficile à produire (trempe en
+            bain, usinage des bords).
+      \item Alternatives crédibles :
+      \begin{itemize}\scriptsize
+        \item profil en \textbf{paliers} (marches discrètes) ;
+        \item \textbf{renforcer la trempe} aux bords plutôt qu'ajouter de la
+              matière (masse constante).
+      \end{itemize}
+      \item Le seuil $\sigma_c$ est \textbf{statistique} : notre $P$ donne un
+            ordre de grandeur, pas une garantie.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 22 : conclusion =====================
+\begin{frame}{Conclusion}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \begin{block}{Réponse à la question}
+    \footnotesize Le profil optimal est \textbf{fin au centre, épais aux
+    bords}. Il fait passer le risque de casse d'environ
+    \textcolor{danger}{$59\%$} (écran uniforme fin) à environ
+    \textcolor{ok}{$3$--$13\%$}, à toucher préservé.
+    \end{block}
+    \footnotesize Tout repose sur une relation simple :
+    \[ \sigma_{\max}\propto \frac{1}{\sqrt{e}} \]
+    obtenue avec \textbf{uniquement} énergie + ressort + flexion d'une poutre.
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      % deux barres P
+      \draw[fill=danger!30](0,0) rectangle (0.9,3.0);
+      \node[align=center] at (0.45,-0.45){\scriptsize uniforme\\\scriptsize $\approx 59\%$};
+      \draw[fill=ok!35](1.8,0) rectangle (2.7,0.65);
+      \node[align=center] at (2.25,-0.45){\scriptsize optimisé\\\scriptsize $\approx 3$--$13\%$};
+      \draw[-{Latex},thick](1.0,2.4) .. controls (1.4,2.4) .. (1.7,1.0);
+      \node at (1.45,2.7){\scriptsize $\div 4$ à $5$};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide 23 : ouvertures =====================
+\begin{frame}{Ouvertures et bibliographie}
+  \begin{columns}[T]
+  \column{0.5\textwidth}
+    \textbf{ }
+    \footnotesize
+    \begin{itemize}
+      \item Modèle \textbf{plaque 2D} (Kirchhoff--Love) + contact de Hertz.
+      \item Loi de \textbf{Weibull} pour la rupture (vraie statistique des
+            défauts).
+      \item Matériaux à \textbf{gradient de propriétés} (FGM) ;
+            trempe différentielle aux bords.
+    \end{itemize}
+  \column{0.5\textwidth}
+    \textbf{Sources}
+    \scriptsize
+    \begin{itemize}
+      \item Timoshenko, \textit{Theory of Plates and Shells}, 1959.
+      \item K.~L.~Johnson, \textit{Contact Mechanics}, 1985.
+      \item W.~Weibull, \textit{J. Appl. Mech.}, 1951.
+      \item R.~Gy, \textit{Mat. Sci. Eng. B}, 2008 (trempe par échange ionique).
+      \item Corning Gorilla Glass --- fiches techniques.
+    \end{itemize}
+  \end{columns}
+  \vspace{0.6cm}
+  \begin{center}\Large\textcolor{verre}{Merci de votre attention.}\end{center}
+\end{frame}
+\end{document}
