@@ -515,7 +515,23 @@
   \begin{columns}[c]
   \column{0.55\textwidth}
     \begin{center}
-    \figauto{fig_poutre_profils.png}{1.0}{profils + P(rupture)}
+    \begin{tikzpicture}[yscale=0.042,xscale=1.05]
+      \draw[-{Latex}](0,0)--(0,70) node[above,font=\scriptsize]{$P$ (\%)};
+      \draw(0,0)--(5.1,0);
+      \foreach \y in {0,20,40,60}{
+        \draw(0,\y)--(-0.12,\y) node[left,font=\tiny]{\y};
+        \draw[gray!25](0,\y)--(5.1,\y);}
+      \fill[danger!70](0.4,0) rectangle (1.4,59);
+      \fill[ok!70](2.0,0) rectangle (3.0,13);
+      \fill[verre!70](3.6,0) rectangle (4.6,10);
+      \node[font=\tiny] at (0.9,64){59\%};
+      \node[font=\tiny] at (2.5,18){13\%};
+      \node[font=\tiny] at (4.1,15){10\%};
+      \node[font=\tiny,below] at (0.9,0){Uniforme};
+      \node[font=\tiny,below] at (2.5,0){Parabol.};
+      \node[font=\tiny,below] at (4.1,0){Expon.};
+      \node[font=\scriptsize] at (2.5,78){Risque de casse par profil};
+    \end{tikzpicture}
     \end{center}
   \column{0.45\textwidth}
     \small
@@ -541,7 +557,35 @@
 \begin{frame}{Étape « optimisation » --- le meilleur compromis}
   \begin{columns}[c]
   \column{0.55\textwidth}
-    \figauto{fig_poutre_optim.png}{1.0}{carte $P(e_c,e_b)$}
+    \centering
+    \begin{tikzpicture}[scale=0.62]
+      % --- carte de chaleur P(e_c, e_b) dessinee en TikZ ---
+      \foreach \i in {0,...,5}{
+        \foreach \j in {0,...,3}{
+          \pgfmathtruncatemacro\P{55 - \i*9 - \j*2}
+          \pgfmathtruncatemacro\g{max(0,min(100,\P*1.6))}
+          \fill[red!\g!green!88] (\i,\j) rectangle ++(1,1);
+          \node[font=\tiny,white] at (\i+0.5,\j+0.5){\P};
+        }
+      }
+      \draw[step=1,gray!60,thin](0,0) grid (6,4);
+      % zone interdite par la masse (coin haut-droit)
+      \fill[pattern=north east lines,pattern color=black](5,3) rectangle (6,4);
+      \node[font=\tiny,align=center] at (5.5,3.5){};
+      % optimum
+      \node[star,star points=5,star point ratio=2.2,fill=yellow,draw=black,
+            scale=0.7] (opt) at (5.5,2.5){};
+      \node[font=\tiny,below=1pt of opt]{optimum};
+      % axes
+      \foreach \i/\lab in {0/0.5,1/0.8,2/1.1,3/1.4,4/1.7,5/2.0}{
+        \node[font=\tiny,below] at (\i+0.5,0){\lab};}
+      \node[font=\scriptsize,below] at (3,-0.55){$e_b$ (bord, mm)};
+      \foreach \j/\lab in {0/0.2,1/0.3,2/0.4,3/0.5}{
+        \node[font=\tiny,left] at (0,\j+0.5){\lab};}
+      \node[font=\scriptsize,rotate=90] at (-1.0,2){$e_c$ (centre, mm)};
+      \node[font=\tiny,align=center] at (3,4.4)
+        {\textcolor{danger}{rouge = risque fort}\ \ \textcolor{ok}{vert = risque faible}\ \ (valeurs en \%)};
+    \end{tikzpicture}
   \column{0.45\textwidth}
     \small On cherche $(e_c,e_b)$ qui minimise $P$ sous deux contraintes :
     \begin{itemize}\footnotesize
