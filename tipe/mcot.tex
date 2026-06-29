@@ -1,16 +1,13 @@
 % =====================================================================
 %  MCOT - Mise en Cohérence des Objectifs du TIPE (format SCEI / CPGE)
 %  Sujet : optimisation du profil d'épaisseur d'un écran en verre trempé.
+%  Version alignee sur la presentation : modele POUTRE 1D + validation RLC.
+%  (Aucune validation par le son / FFT.)
 %
-%  Respect des limites officielles de mots :
-%    - Motivation .................... 50 mots max
-%    - Ancrage au thème .............. 50 mots max
-%    - Problématique ................. 50 mots max
-%    - Objectifs ..................... 100 mots max
-%    - Bibliographie commentée ....... 650 mots max
-%  (les comptes approximatifs sont indiqués en commentaire % ~N mots)
-%
-%  Les MOTS TECHNIQUES sont mis en gras (\textbf{...}).
+%  Limites officielles respectees :
+%    Motivation 50 / Ancrage 50 / Problematique 50 / Objectifs 100 /
+%    Bibliographie commentee 650 mots.
+%  Mots techniques en gras (\textbf{...}).
 % =====================================================================
 \documentclass[11pt,a4paper]{article}
 \usepackage[utf8]{inputenc}
@@ -28,7 +25,6 @@
 
 \begin{document}
 
-% ---------------------------------------------------------------------
 \begin{center}
 {\Large\bfseries Mise en Cohérence des Objectifs du TIPE (MCOT)}\\[6pt]
 {\large\bfseries Optimisation du profil d'épaisseur d'un écran protecteur\\
@@ -40,7 +36,7 @@ de smartphone en verre trempé}\\[8pt]
 
 % ---------------------------------------------------------------------
 \section{Positionnement thématique}
-\textbf{Physique} (mécanique du solide, \textbf{résistance des matériaux}),
+\textbf{Physique} (mécanique, \textbf{résistance des matériaux}, \textbf{oscillateurs}),
 \textbf{Informatique pratique} (simulation numérique),
 \textbf{Mathématiques} (probabilités).
 
@@ -50,7 +46,7 @@ de smartphone en verre trempé}\\[8pt]
 \textbf{Français} & \textbf{Anglais} \\[2pt]
 verre trempé & tempered glass \\
 flexion d'une poutre & beam bending \\
-contrainte de rupture & fracture stress \\
+analogie électromécanique (RLC) & electromechanical analogy (RLC) \\
 simulation de Monte-Carlo & Monte-Carlo simulation \\
 optimisation sous contrainte & constrained optimization \\
 \end{tabular}
@@ -58,17 +54,17 @@ optimisation sous contrainte & constrained optimization \\
 
 % --------------------------- 50 mots --------------------------------
 \section{Motivation}
-% ~50 mots
+% ~49 mots
 Chaque année, des millions d'écrans de smartphone se brisent lors d'une
 chute. Passionné par la \textbf{mécanique} et la \textbf{physique des
-matériaux}, j'ai voulu comprendre pourquoi la \textbf{rupture} s'amorce
-aux \textbf{coins}, et tester une idée simple : une
-\textbf{épaisseur variable} du \textbf{verre trempé} pourrait-elle réduire ce
-risque tout en préservant la \textbf{tactilité} ?
+matériaux}, j'ai voulu comprendre pourquoi la \textbf{rupture} s'amorce aux
+\textbf{coins}, et tester une idée simple : une \textbf{épaisseur variable} du
+\textbf{verre trempé} pourrait-elle réduire ce risque en préservant la
+\textbf{tactilité} ?
 
 % --------------------------- 50 mots --------------------------------
 \section{Ancrage au thème de l'année}
-% ~50 mots  (adapter le mot du thème officiel)
+% ~46 mots  (adapter le mot du thème officiel)
 Le sujet s'inscrit dans le thème \emph{«~\dots(thème de l'année)\dots~»} : une
 chute provoque une \textbf{transition} brutale de l'\textbf{énergie cinétique}
 en \textbf{contrainte de flexion}, jusqu'à la \textbf{rupture fragile}.
@@ -78,7 +74,7 @@ Optimiser le \textbf{profil d'épaisseur} revient à chercher, par une
 
 % --------------------------- 50 mots --------------------------------
 \section{Problématique retenue}
-% ~50 mots
+% ~47 mots
 Quelle \textbf{répartition spatiale de l'épaisseur} d'un écran en
 \textbf{verre trempé} minimise la \textbf{probabilité de rupture} lors d'une
 chute, sous \textbf{contrainte de tactilité} (épaisseur centrale
@@ -88,13 +84,15 @@ $\le 0{,}5$~mm) et de \textbf{masse} ? On modélise l'écran par une
 
 % --------------------------- 100 mots ------------------------------
 \section{Objectifs du TIPE}
-% ~70 mots
+% ~75 mots
 \begin{enumerate}[leftmargin=1.6em,itemsep=1pt]
   \item Établir un \textbf{modèle mécanique} reliant l'épaisseur locale $e$ à la
-        \textbf{contrainte maximale} de traction, et démontrer la loi
+        \textbf{contrainte maximale} de traction, par \textbf{conservation de
+        l'énergie} et \textbf{flexion d'une poutre}, et démontrer la loi
         $\sigma_{\max}\propto e^{-1/2}$.
-  \item Valider cette dynamique par une \textbf{analogie électromécanique}
-        (\textbf{circuit RLC}) mesurable à l'\textbf{oscilloscope}.
+  \item \textbf{Vérifier} cette loi par une \textbf{analogie électromécanique}
+        (\textbf{circuit RLC} à impulsions) mesurée à l'\textbf{oscilloscope},
+        uniquement avec des grandeurs électriques.
   \item Estimer par \textbf{Monte-Carlo} la \textbf{probabilité de rupture} de
         plusieurs \textbf{profils} (uniforme, parabolique, exponentiel).
   \item Déterminer le \textbf{profil optimal} sous contraintes de tactilité et
@@ -103,87 +101,82 @@ $\le 0{,}5$~mm) et de \textbf{masse} ? On modélise l'écran par une
 
 % --------------------------- 650 mots ------------------------------
 \section{Bibliographie commentée}
-% ~640 mots
-La compréhension du problème repose d'abord sur la \textbf{théorie des plaques
-et des poutres}. L'ouvrage de référence de Timoshenko~[1] établit l'\textbf{équation
-de la flexion} et introduit la \textbf{rigidité de flexion}
-$D = E\,e^{3}/12(1-\nu^{2})$, dont la dépendance cubique en l'épaisseur est
-l'ingrédient central de notre étude. Pour rester au niveau du programme, nous
-réduisons la plaque à une \textbf{poutre sur deux appuis}, dont la
-\textbf{raideur} $k = 48EI/L^{3}$ conserve la même loi $k \propto e^{3}$ ; la
-\textbf{contrainte de flexion} $\sigma = My/I$ y est élémentaire. Cette
-simplification, discutée dans~[1], surestime légèrement la contrainte, ce qui
-rend notre conclusion \textbf{conservative}. Cette réduction
-\textbf{unidimensionnelle} introduit toutefois une limite : un écran étant
-\textbf{rectangulaire}, la bonne variable n'est pas la distance au centre mais
-la \textbf{proximité du bord}, afin que la surépaisseur reste \textbf{uniforme}
-le long du contour ; [1] fournit le cadre pour discuter cet écart entre modèle
-\textbf{1D} et \textbf{plaque 2D}.
+% ~625 mots
+La démarche repose d'abord sur la \textbf{résistance des matériaux}. L'ouvrage de
+Timoshenko~[1] établit la \textbf{flexion des poutres} : le \textbf{moment
+quadratique} $I = b\,e^{3}/12$, la \textbf{raideur} $k = 48EI/L^{3}$ et la
+\textbf{contrainte de flexion} $\sigma = My/I$. La dépendance cubique
+$k \propto e^{3}$ est l'ingrédient central : combinée à une \textbf{conservation
+de l'énergie} (une fraction de l'\textbf{énergie cinétique} de chute est stockée
+en flexion), elle conduit à la loi clé $\sigma_{\max}\propto e^{-1/2}$. La même
+théorie relie la fléche maximale à la \textbf{contrainte de peau} ; en exprimant
+l'énergie absorbée, on obtient $\sigma_{\max}$ en fonction de l'épaisseur locale,
+base de toute l'optimisation. Modéliser l'écran par une \textbf{poutre} plutôt
+que par une plaque garde le calcul accessible au programme tout en restant
+\textbf{conservatif}, puisqu'on néglige la répartition de l'effort dans la
+seconde direction.
 
-Le choc lui-même relève de la \textbf{mécanique du contact}. Johnson~[2]
-développe la \textbf{théorie de Hertz}, qui fournit la \textbf{durée de contact}
-et la \textbf{force maximale} lors de l'impact d'un solide. La comparaison de
-cette durée à la \textbf{période propre} de la plaque justifie
-l'\textbf{approximation impulsionnelle} : le transfert de \textbf{quantité de
-mouvement} est quasi instantané. Nous en retenons surtout une idée robuste --
-une \textbf{fraction de l'énergie cinétique} de chute est convertie en
-\textbf{énergie de flexion} -- qui évite le calcul détaillé du contact tout en
-donne le bon \textbf{ordre de grandeur} de la fléche, donc de la contrainte. Le
-\textbf{coefficient de restitution} et la répartition de l'énergie entre rebond,
-onde sonore et déformation du téléphone expliquent pourquoi seule une faible
-fraction sert réellement à fléchir le verre.
+La validation expérimentale s'appuie sur l'\textbf{analogie électromécanique},
+exposée dans les \textit{Feynman Lectures on Physics}~[2]. L'\textbf{oscillateur
+mécanique amorti} et le \textbf{circuit RLC série} obéissent à la même
+\textbf{équation différentielle} du second ordre, avec la correspondance
+$m\!\leftrightarrow\!L$, $c\!\leftrightarrow\!R$, $k\!\leftrightarrow\!1/C$.
+Cette équivalence permet de \textbf{reproduire la dynamique du choc} par une
+\textbf{impulsion électrique} et de \textbf{mesurer à l'oscilloscope} le régime
+transitoire. La \textbf{pseudo-période} et le \textbf{décrément logarithmique}
+relevés renseignent sur la raideur et l'amortissement équivalents, tandis que la
+\textbf{charge maximale} du condensateur joue le rôle de la \textbf{fléche
+maximale}. En faisant varier la \textbf{capacité} $C$ (image de l'épaisseur via
+$k\propto e^{3}$), on vérifie la loi $\sigma_{\max}\propto e^{-1/2}$ uniquement à
+partir de \textbf{grandeurs électriques} : c'est le c\oe ur de l'expérience.
 
-Le verre étant un matériau \textbf{fragile}, sa rupture est par nature
-\textbf{statistique}. L'article fondateur de Weibull~[3] propose une \textbf{loi
-de probabilité} de rupture dépendant de la contrainte et d'un \textbf{module de
-Weibull}, qui rend compte de la dispersion liée aux \textbf{micro-défauts} de
-surface. Cette approche éclaire le choix d'une \textbf{modélisation
-probabiliste} : plutôt qu'un seuil déterministe unique, nous tirons le
-\textbf{seuil de rupture} selon une loi de dispersion, ce qui justifie l'emploi
-d'une \textbf{simulation de Monte-Carlo}. La trempe déplace ce \textbf{seuil
-effectif} vers des valeurs élevées, mais les \textbf{bords}, moins bien traités,
-demeurent les zones d'\textbf{amorçage} privilégiées, que la dispersion spatiale
-de la loi permet de représenter.
+Le verre étant \textbf{fragile}, sa rupture est \textbf{statistique}. L'article
+fondateur de Weibull~[3] introduit une \textbf{loi de probabilité} de rupture
+dépendant de la contrainte et d'un \textbf{module de Weibull}, qui rend compte de
+la dispersion liée aux \textbf{micro-défauts} de surface. Un \textbf{seuil
+déterministe} unique masquerait la variabilité réelle entre écrans ; la loi de
+Weibull la restitue. Cela justifie une \textbf{modélisation probabiliste} :
+plutôt qu'un seuil unique, on tire le \textbf{seuil de rupture} selon une loi de
+dispersion, d'où l'emploi d'une \textbf{simulation de Monte-Carlo}.
 
-Les propriétés spécifiques du \textbf{verre trempé} proviennent de~[4] et~[5].
-Gy~[4] décrit la \textbf{trempe chimique par échange ionique}
+Les propriétés du \textbf{verre trempé} proviennent de~[4] et~[5]. Gy~[4] décrit
+la \textbf{trempe chimique par échange ionique}
 ($\mathrm{K}^{+}/\mathrm{Na}^{+}$), qui crée une \textbf{précontrainte de
 compression de surface} : la rupture n'apparaît que lorsque la \textbf{traction
-appliquée} dépasse cette précontrainte, ce qui élève fortement la résistance
-effective. Les fiches techniques du \textbf{verre aluminosilicate}~[5]
-fournissent les valeurs numériques utilisées (\textbf{module d'Young},
-\textbf{coefficient de Poisson}, \textbf{masse volumique}, \textbf{contrainte de
-compression de surface}), indispensables pour des résultats réalistes. Elles permettent aussi d'estimer la
-\textbf{profondeur de couche comprimée} (DOL) et de discuter la
-\textbf{fabricabilité} d'un \textbf{gradient continu} d'épaisseur, point critique
-du sujet.
+appliquée} dépasse cette précontrainte, élevant fortement la résistance
+effective ; les \textbf{bords}, moins bien traités, restent les zones
+d'\textbf{amorçage}. La \textbf{profondeur de couche comprimée} (DOL) y est
+précisée, paramètre clé pour juger la tenue des bords. Les fiches techniques du
+\textbf{verre aluminosilicate}~[5] fournissent les valeurs numériques
+(\textbf{module d'Young}, \textbf{coefficient de Poisson}, \textbf{masse
+volumique}, \textbf{contrainte de compression de surface}) nécessaires à des
+résultats réalistes et à la discussion de la \textbf{fabricabilité}.
 
-Enfin, la \textbf{méthode numérique} s'appuie sur les principes de la
-\textbf{simulation de Monte-Carlo}~[6] : on tire un grand nombre de scénarios
-aléatoires (hauteur de chute, \textbf{angle d'impact} selon une
-\textbf{gaussienne tronquée}, point d'impact), on calcule pour chacun la
-contrainte par le modèle de poutre, puis on compte la proportion d'événements
-dépassant le seuil. La \textbf{loi des grands nombres} garantit la convergence
-de l'estimateur de la \textbf{probabilité de rupture}. Cette méthode permet
-aussi de comparer plusieurs \textbf{profils d'épaisseur} et de réaliser une
-\textbf{optimisation sous contraintes} (tactilité, masse).
+Enfin, la \textbf{méthode de Monte-Carlo}~[6] fournit l'outil numérique : on tire
+un grand nombre de chutes aléatoires (hauteur, \textbf{angle d'impact} selon une
+\textbf{gaussienne tronquée}, point d'impact), on calcule la contrainte par le
+modèle de poutre, puis on compte la proportion d'événements dépassant le seuil.
+Le nombre de tirages $N$ fixe la précision de l'estimation. La \textbf{loi des
+grands nombres} garantit la convergence de l'estimateur de la \textbf{probabilité
+de rupture}, et permet de comparer plusieurs \textbf{profils d'épaisseur} puis de
+mener une \textbf{optimisation sous contraintes} (tactilité, masse).
 
-L'ensemble de ces sources dessine une démarche cohérente : [1] donne le modèle
-mécanique, [2] justifie le traitement du choc, [3] fonde le critère de rupture
-probabiliste, [4]--[5] ancrent le modèle dans des données matériau réelles, et
-[6] fournit l'outil numérique. La convergence des disciplines --
-\textbf{résistance des matériaux}, \textbf{physique du contact},
-\textbf{probabilités} et \textbf{informatique} -- confère au sujet sa richesse
+Ces sources forment une chaîne cohérente : [1] donne le modèle mécanique, [2]
+fonde la validation par analogie \textbf{RLC}, [3] le critère de rupture
+probabiliste, [4]--[5] les données matériau, [6] l'outil numérique. Le sujet
+mobilise ainsi \textbf{résistance des matériaux}, \textbf{oscillateurs},
+\textbf{probabilités} et \textbf{informatique}, du \textbf{modèle} à sa
+\textbf{validation} puis à son \textbf{exploitation numérique} : d'où sa richesse
 et sa faisabilité au niveau MP/MPI.
 
 % ---------------------------------------------------------------------
 \section{Références bibliographiques}
 \small
 \begin{enumerate}[label={[\arabic*]},leftmargin=2.2em,itemsep=1pt]
-  \item S.~P.~Timoshenko, S.~Woinowsky-Krieger, \textit{Theory of Plates and
-        Shells}, 2\textsuperscript{e}~éd., McGraw-Hill, 1959.
-  \item K.~L.~Johnson, \textit{Contact Mechanics}, Cambridge University Press,
-        1985.
+  \item S.~P.~Timoshenko, \textit{Strength of Materials, Part~I: Elementary
+        Theory and Problems}, Van Nostrand, 1955.
+  \item R.~Feynman, R.~Leighton, M.~Sands, \textit{The Feynman Lectures on
+        Physics}, vol.~I (oscillations) et~II (circuits), Addison-Wesley, 1964.
   \item W.~Weibull, \textit{A Statistical Distribution Function of Wide
         Applicability}, Journal of Applied Mechanics, vol.~18, p.~293--297, 1951.
   \item R.~Gy, \textit{Ion exchange for glass strengthening}, Materials Science
