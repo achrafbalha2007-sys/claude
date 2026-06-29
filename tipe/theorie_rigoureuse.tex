@@ -1,0 +1,275 @@
+% =====================================================================
+%  Theorie rigoureuse - sequence de slides (Beamer)
+%  On part des lois connues -> on demontre M, sigma=Mz/I -> sigma ~ 1/sqrt(e)
+%  Compilable seul : pdflatex theorie_rigoureuse.tex
+% =====================================================================
+\documentclass[11pt,aspectratio=169]{beamer}
+\usetheme{Madrid}\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing,calc}
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
+\definecolor{gristik}{RGB}{120,120,120}
+
+\begin{document}
+
+\section{Démarche théorique}
+
+% ---------- T1. Lois de depart ----------
+\begin{frame}{Point de départ : les lois que l'on admet}
+  \footnotesize
+  On ne part de rien d'inventé : tout découle de quatre lois connues.
+  \begin{itemize}\itemsep3pt
+    \item \textbf{Chute libre} (mécanique du point) : $v=\sqrt{2gh}$,
+          $E_c=\tfrac12 mv^{2}$.
+    \item \textbf{Loi de Hooke} (élasticité linéaire) : $\sigma=E\,\varepsilon$.
+    \item \textbf{Hypothèse d'Euler--Bernoulli} : les sections droites restent
+          planes et perpendiculaires à la fibre moyenne.
+    \item \textbf{Conservation de l'énergie} lors du choc.
+  \end{itemize}
+  \medskip
+  \centering\textcolor{verre}{Objectif : en déduire comment la contrainte
+  maximale dépend de l'épaisseur $e$, tous autres paramètres fixés.}
+\end{frame}
+
+% ---------- T2. Modelisation ----------
+\begin{frame}{Modélisation : l'écran comme une poutre}
+  \begin{columns}[c]
+  \column{0.46\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.72]
+      \draw[verre,thick](0,3.2) rectangle (4,5.6);
+      \fill[verre!20](0,4.1) rectangle (4,4.6);
+      \node[font=\tiny] at (2,5.9){vue de dessus};
+      \node[font=\tiny,right] at (4.05,4.35){bande $b$};
+      \draw[-{Latex}](2,4.0)--(2,3.0);
+      \fill[gristik](0.4,2.5)--(0.18,2.2)--(0.62,2.2)--cycle;
+      \fill[gristik](3.6,2.5)--(3.38,2.2)--(3.82,2.2)--cycle;
+      \draw[verre,very thick](0.4,2.6)--(3.6,2.6);
+      \draw[-{Latex},danger,thick](2,3.0)--(2,2.7);
+      \draw[{Latex}-{Latex}](0.4,2.05)--(3.6,2.05) node[midway,below,font=\tiny]{portée $L$};
+    \end{tikzpicture}
+  \column{0.54\textwidth}
+    \footnotesize
+    On isole une bande de largeur $b$ et on la traite comme une \textbf{poutre}
+    sur deux appuis.
+    \medskip\\
+    \textbf{Ordres de grandeur :}
+    \begin{itemize}\itemsep1pt
+      \item $L\approx 50$~mm, $b\approx 20$~mm, $e\approx 0{,}5$~mm ;
+      \item $E=73$~GPa, $\nu=0{,}22$, $\rho=2450$~kg/m$^3$ ;
+      \item $m\approx 180$~g, $h\approx 1$~m.
+    \end{itemize}
+    Comme $e\ll L$, le cisaillement est négligeable (Euler--Bernoulli).
+  \end{columns}
+\end{frame}
+
+% ---------- T3. Cinematique ----------
+\begin{frame}{Étape 1 --- cinématique : déformation d'une fibre}
+  \begin{columns}[c]
+  \column{0.46\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      \coordinate (O) at (0,3.1);
+      \node[font=\tiny,above] at (O){$O$};
+      \draw[gray] (O)--($(O)+(-112:3.1)$);
+      \draw[gray] (O)--($(O)+(-68:3.1)$);
+      \draw[verre,very thick] ($(O)+(-112:2.3)$) arc (-112:-68:2.3);
+      \draw[danger,thick] ($(O)+(-112:2.9)$) arc (-112:-68:2.9);
+      \draw[{Latex}-{Latex}] ($(O)+(-90:2.3)$)--($(O)+(-90:2.9)$)
+            node[midway,right,font=\tiny]{$z$};
+      \node[verre,font=\tiny,left] at ($(O)+(-112:2.3)$){fibre neutre};
+      \node[font=\tiny,left] at ($(O)+(-90:1.6)$){$R$};
+    \end{tikzpicture}
+  \column{0.54\textwidth}
+    \footnotesize
+    Une fibre à la distance $z$ de la fibre neutre s'allonge de
+    $(R+z)\mathrm{d}\theta-R\,\mathrm{d}\theta$. Sa déformation vaut donc :
+    \[ \varepsilon(z)=\frac{z\,\mathrm{d}\theta}{R\,\mathrm{d}\theta}
+       =\frac{z}{R}=z\,\kappa, \]
+    où $\kappa=1/R$ est la \textbf{courbure} (en m$^{-1}$).
+    \medskip\\
+    \textcolor{verre}{La déformation est proportionnelle à la distance au centre.}
+  \end{columns}
+\end{frame}
+
+% ---------- T4. Hooke -> contrainte ----------
+\begin{frame}{Étape 2 --- loi de Hooke : la contrainte locale}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \draw[verre,thick,fill=verre!10](0,-1.5) rectangle (0.7,1.5);
+      \draw[{Latex}-{Latex}](-0.32,-1.5)--(-0.32,1.5) node[midway,left,font=\tiny]{$e$};
+      \draw[dashed](0,0)--(3.0,0);
+      \node[font=\tiny,right] at (1.9,0){$\sigma=0$};
+      \foreach \z/\l in {0.5/0.45,1.0/0.9,1.5/1.35}{
+        \draw[-{Latex},ok](0.7+\l,\z)--(0.7,\z);}
+      \foreach \z/\l in {0.5/0.45,1.0/0.9,1.5/1.35}{
+        \draw[-{Latex},danger](0.7,-\z)--(0.7+\l,-\z);}
+      \node[ok,font=\tiny,right] at (1.8,1.45){comprimé};
+      \node[danger,font=\tiny,right] at (1.8,-1.45){tendu};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \footnotesize
+    En reportant $\varepsilon=z\kappa$ dans la loi de Hooke :
+    \[ \sigma(z)=E\,\varepsilon(z)=E\,z\,\kappa . \]
+    Profil \textbf{linéaire} dans l'épaisseur, extrémal en surface :
+    \[ \sigma_{\max}=E\,\frac{e}{2}\,\kappa . \]
+    Mais $\kappa$ n'est pas encore connu : il faut le relier au chargement.
+  \end{columns}
+\end{frame}
+
+% ---------- T5. Le moment flechissant (cle) ----------
+\begin{frame}{Étape 3 --- le \emph{moment fléchissant} (notion clé)}
+  \begin{columns}[c]
+  \column{0.44\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \draw[verre,thick,fill=verre!10](0,-1.6) rectangle (0.5,1.6);
+      \draw[dashed](0,0)--(3.2,0) node[right,font=\tiny]{axe neutre};
+      \draw[thick](1.9,1.6)--(0.5,0)--(1.9,-1.6);
+      \fill[danger!40](0,0.85) rectangle (0.5,1.0);
+      \draw[{Latex}-{Latex}](0.62,0)--(0.62,0.92) node[midway,right,font=\tiny]{$z$};
+      \draw[-{Latex},danger,thick](0.95,0.92)--(1.75,0.92)
+            node[right,font=\tiny]{$\mathrm{d}F=\sigma\,\mathrm{d}A$};
+      \draw[{Latex}-{Latex}](-0.3,-1.6)--(-0.3,1.6) node[midway,left,font=\tiny]{$e$};
+    \end{tikzpicture}
+  \column{0.56\textwidth}
+    \footnotesize
+    Chaque élément de surface $\mathrm{d}A$ à la hauteur $z$ subit une force
+    $\mathrm{d}F=\sigma(z)\,\mathrm{d}A$. Son moment par rapport à l'axe neutre
+    est $\mathrm{d}M=z\,\mathrm{d}F$.
+    Le \textbf{moment fléchissant} est la somme de ces moments :
+    \[ M=\int_{S} z\,\sigma(z)\,\mathrm{d}A
+        =E\kappa\!\int_{S} z^{2}\mathrm{d}A=E\,I\,\kappa, \]
+    \[ I=\int_{S} z^{2}\,\mathrm{d}A=\frac{b\,e^{3}}{12}\quad(\text{moment quadratique}). \]
+    \centering\textcolor{verre}{$M$ mesure l'effort de flexion subi par la section
+    (en N$\cdot$m).}
+  \end{columns}
+\end{frame}
+
+% ---------- T6. sigma = M z / I demontre ----------
+\begin{frame}{Étape 4 --- la contrainte en fonction du moment}
+  \footnotesize
+  En éliminant $\kappa$ entre $\sigma=Ez\kappa$ et $M=EI\kappa$, on \textbf{démontre}
+  (sans l'admettre) :
+  \[ \boxed{\;\sigma(z)=\frac{M\,z}{I}\;}\qquad
+     \sigma_{\max}=\frac{M\,(e/2)}{I}=\frac{6M}{b\,e^{2}} . \]
+  \begin{block}{Lecture critique}
+  Cette formule \emph{semble} dire $\sigma\propto 1/e^{2}$, et
+  $\sigma_{\max}=E\tfrac{e}{2}\kappa$ \emph{semble} dire $\sigma\propto e$. C'est
+  \textbf{la même relation} ($M=EI\kappa$) : ni $M$ ni $\kappa$ ne sont fixes, ils
+  dépendent du chargement, donc de $e$. Pour conclure, il faut fixer la vraie
+  donnée du problème.
+  \end{block}
+\end{frame}
+
+% ---------- T7. Ce que la chute fixe ----------
+\begin{frame}{Étape 5 --- ce que la chute fixe réellement}
+  \begin{columns}[c]
+  \column{0.4\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      \draw[-{Latex}](0,3.4)--(0,-0.1);
+      \draw[verre,fill=verre!12,thick,rounded corners=2pt](1.1,2.7) rectangle (1.7,3.5);
+      \draw[-{Latex[length=2mm]},danger,thick](1.4,2.5)--(1.4,1.7) node[midway,right,font=\tiny]{$v$};
+      \draw[thick](0.5,0)--(2.6,0);
+      \foreach \x in {0.6,0.9,1.2,1.5,1.8,2.1,2.4}{\draw[gristik](\x,0)--(\x-0.2,-0.2);}
+      \draw[{Latex}-{Latex}](0.15,0)--(0.15,3.1) node[midway,left,font=\tiny]{$h$};
+    \end{tikzpicture}
+  \column{0.6\textwidth}
+    \footnotesize
+    \begin{block}{Imposé par la chute}
+    L'\textbf{énergie} $E_c=mgh$ et la quantité de mouvement $p=mv$
+    (fixées par $h$).
+    \end{block}
+    \textbf{Non imposés} : $M$, $\kappa$, et la force de contact $F$ : ce sont des
+    \emph{conséquences} qui dépendent de la raideur (donc de $e$).
+    \medskip\\
+    Ordre de grandeur ($h=1$~m) : $v\approx 4{,}4$~m/s, $E_c\approx 1{,}8$~J.
+    \medskip\\
+    \textcolor{danger}{La référence fixe est donc l'énergie.}
+  \end{columns}
+\end{frame}
+
+% ---------- T8. Energie -> x, k, kappa ----------
+\begin{frame}{Étape 6 --- énergie, raideur et courbure}
+  \footnotesize
+  \textbf{Bilan d'énergie} (fraction $\eta$ stockée en flexion) :
+  \[ \tfrac12\,k\,x_{\max}^{2}=\eta E_c
+     \;\Rightarrow\; x_{\max}=\sqrt{\frac{2\eta E_c}{k}} . \]
+  \textbf{Raideur} (poutre sur deux appuis, RDM) et \textbf{courbure} :
+  \[ k=\frac{48EI}{L^{3}}=\frac{4Eb}{L^{3}}\,e^{3}\;\propto e^{3},
+     \qquad \kappa_{\max}=\frac{12\,x_{\max}}{L^{2}} . \]
+  \begin{block}{Ordres de grandeur ($e=0{,}5$~mm, $h=1$~m)}
+  \centering\scriptsize $I\approx 2\times10^{-13}$~m$^4$ \;;\;
+  $EI\approx 1{,}5\times10^{-2}$~N$\cdot$m$^2$ \;;\;
+  $k\approx 5{,}8\times10^{3}$~N/m \;;\;
+  $x_{\max}\approx 5{,}5$~mm \;;\;
+  $M\approx 0{,}4$~N$\cdot$m.
+  \end{block}
+\end{frame}
+
+% ---------- T9. Loi finale + graphe legende ----------
+\begin{frame}{Étape 7 --- loi finale : $\sigma_{\max}\propto 1/\sqrt{e}$}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \footnotesize
+    On combine tout, à énergie fixée :
+    \[ \sigma_{\max}=\frac{6Ee}{L^{2}}\,x_{\max},\quad
+       x_{\max}\propto e^{-3/2} \]
+    \[ \boxed{\;\sigma_{\max}\propto e^{-1/2}\;} \]
+    Application ($e=0{,}5$~mm, $h=1$~m, centre) :
+    \[ \sigma_{\max}\approx 0{,}48~\mathrm{GPa}. \]
+  \column{0.5\textwidth}
+    \centering {\scriptsize $\sigma_{\max}$ au centre, chute de 1~m}
+    \begin{tikzpicture}[scale=1]
+      \draw[-{Latex}](0,0)--(7.4,0) node[right,font=\scriptsize]{$e$ (mm)};
+      \draw[-{Latex}](0,0)--(0,5) node[above,font=\scriptsize]{$\sigma_{\max}$ (MPa)};
+      \foreach \e in {0.3,0.5,0.8,1.0,1.5}{
+        \draw ({\e*4.5},0)--({\e*4.5},-0.1) node[below,font=\tiny]{\e};}
+      \foreach \s/\yc in {300/1.5,500/2.5,700/3.5,900/4.5}{
+        \draw (0,\yc)--(-0.1,\yc) node[left,font=\tiny]{\s};}
+      \draw[danger,dashed](0,4.25)--(7.0,4.25) node[right,font=\tiny,danger]{seuil 850};
+      \draw[verre,very thick,domain=0.28:1.55,samples=80,smooth]
+        plot ({\x*4.5},{482*sqrt(0.5/\x)/200});
+      \foreach \e/\s in {0.3/622,0.5/482,1.0/341,1.5/278}{
+        \fill[danger] ({\e*4.5},{\s/200}) circle (1.5pt);
+        \node[font=\tiny,above right] at ({\e*4.5},{\s/200}){\s};}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ---------- T10. References ----------
+\begin{frame}{Références}
+  \scriptsize
+  \begin{enumerate}[leftmargin=1.6em]
+    \item Théorie des poutres et $\sigma=Mz/I$ : \emph{Euler--Bernoulli beam
+          theory} (Wikipedia) ; S.~Timoshenko, \emph{Strength of Materials}, 1955 ;
+          \emph{Mechanics of Materials: Bending}, Boston University
+          (\texttt{bu.edu/moss}).
+    \item Verre trempé, échange ionique $\mathrm{K}^{+}/\mathrm{Na}^{+}$ et
+          précontrainte de compression : R.~Gy, \emph{Ion exchange for glass
+          strengthening}, Mater. Sci. Eng.~B, 2008 ; \emph{Tempered glass}
+          (Wikipedia).
+    \item Résistance plus faible des bords : \emph{Study of edge strength of load
+          bearing glasses} (ResearchGate, 2010).
+    \item Rupture fragile statistique : W.~Weibull, J. Appl. Mech., 1951 ;
+          \emph{Weibull analysis of ceramics and related materials: A review}
+          (NIH/PMC, 2024).
+    \item Chute et rupture d'écrans : \emph{Dynamic fast fracture of smartphone
+          screens} (ResearchGate, 2019).
+  \end{enumerate}
+  \medskip
+  \centering\tiny Contenu reformulé à partir de ces sources ; valeurs numériques
+  utilisées comme ordres de grandeur.
+\end{frame}
+
+\end{document}
