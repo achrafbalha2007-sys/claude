@@ -1,0 +1,148 @@
+% =====================================================================
+%  Etude energetique - version resserree (Beamer)
+%  Coeur : demonstration rigoureuse de sigma_max(x_max).
+%  Compilable seul : pdflatex etude_energetique.tex
+% =====================================================================
+\documentclass[11pt,aspectratio=169]{beamer}
+\usetheme{Madrid}\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing}
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
+\definecolor{gristik}{RGB}{120,120,120}
+
+\begin{document}
+
+\section{Étude énergétique}
+
+% ---------- 1. Demarche ----------
+\begin{frame}{Démarche : un bilan d'énergie}
+  \footnotesize
+  Lors d'une chute, la grandeur réellement imposée est l'\textbf{énergie}
+  $E_c=mgh$ (ni la force, ni le moment, qui dépendent de la raideur, donc de $e$).
+  \medskip
+  \begin{itemize}\itemsep3pt
+    \item On modélise l'écran par une \textbf{poutre} sur deux appuis (largeur
+          $b$, portée $L$, épaisseur $e$).
+    \item Hypothèses : élasticité linéaire (\textbf{Hooke}), poutre
+          d'\textbf{Euler--Bernoulli} ($e\ll L$), petites déformations.
+    \item On suppose qu'une fraction $\eta$ de $E_c$ est stockée en
+          \textbf{énergie élastique de flexion}.
+  \end{itemize}
+  \medskip
+  \centering\textcolor{verre}{But : relier la contrainte maximale $\sigma_{\max}$
+  à l'épaisseur $e$, à énergie d'impact fixée.}
+\end{frame}
+
+% ---------- 2. Chute -> fleche ----------
+\begin{frame}{De la chute à la fléche}
+  \begin{columns}[c]
+  \column{0.44\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \fill[gristik](0,0)--(-0.2,-0.3)--(0.2,-0.3)--cycle;
+      \fill[gristik](3.4,0)--(3.2,-0.3)--(3.6,-0.3)--cycle;
+      \draw[gray,dashed](0,0)--(3.4,0);
+      \draw[verre,very thick](0,0) .. controls (1.7,-1.0) .. (3.4,0);
+      \draw[-{Latex},danger,thick](1.7,0.9)--(1.7,-0.55) node[midway,right,font=\tiny]{$F$};
+      \draw[{Latex}-{Latex}](3.65,0)--(3.65,-0.78) node[midway,right,font=\tiny]{$x_{\max}$};
+      \draw[{Latex}-{Latex}](0,-1.05)--(3.4,-1.05) node[midway,below,font=\tiny]{$L$};
+    \end{tikzpicture}
+  \column{0.56\textwidth}
+    \footnotesize
+    Chute libre : $v=\sqrt{2gh}$, $E_c=\tfrac12 mv^{2}=mgh$.
+    \medskip\\
+    Bilan d'énergie :
+    \[ \tfrac12\,k\,x_{\max}^{2}=\eta E_c
+       \;\Rightarrow\; x_{\max}=\sqrt{\frac{2\eta E_c}{k}} . \]
+    Raideur de la poutre (RDM) : $\;k=\dfrac{48EI}{L^{3}}=\dfrac{4Eb}{L^{3}}e^{3}\propto e^{3},\;$
+    $I=\dfrac{be^{3}}{12}.$
+    \medskip\\
+    \scriptsize Ordres de grandeur ($h=1$~m, $e=0{,}5$~mm) :
+    $v\approx 4{,}4$~m/s, $E_c\approx 1{,}8$~J, $k\approx 5{,}8\times10^{3}$~N/m,
+    $x_{\max}\approx 5{,}5$~mm.
+  \end{columns}
+\end{frame}
+
+% ---------- 3. DEMONSTRATION sigma_max(x_max) ----------
+\begin{frame}{Démonstration : $\sigma_{\max}$ en fonction de $x_{\max}$}
+  \footnotesize
+  \textbf{(a) Cinématique + Hooke.} Une fibre à la distance $z$ se déforme de
+  $\varepsilon=z\kappa$ ($\kappa$ : courbure), donc $\sigma=E z\kappa$ et
+  \[ \sigma_{\max}=E\,\frac{e}{2}\,\kappa_{\max}. \tag{1}\]
+  \textbf{(b) Forme de la déformée} (poutre sur deux appuis, charge centrale,
+  résultat de RDM), pour $0\le x\le L/2$ :
+  \[ w(x)=\frac{F}{48EI}\big(3L^{2}x-4x^{3}\big). \]
+  On en tire la fléche et la courbure au centre :
+  \[ x_{\max}=w(L/2)=\frac{FL^{3}}{48EI},\qquad
+     \kappa_{\max}=\big|w''(L/2)\big|=\frac{FL}{4EI}. \]
+  \textbf{(c) Élimination de $F$.} En faisant le rapport :
+  \[ \kappa_{\max}=\frac{12}{L^{2}}\,x_{\max}. \tag{2}\]
+  \textbf{Conclusion} (1)+(2) :
+  \[ \boxed{\;\sigma_{\max}=\frac{6\,E\,e}{L^{2}}\,x_{\max}\;}\qquad\square \]
+\end{frame}
+
+% ---------- 4. Loi finale + graphe ----------
+\begin{frame}{Loi finale : $\sigma_{\max}\propto 1/\sqrt{e}$}
+  \begin{columns}[c]
+  \column{0.48\textwidth}
+    \footnotesize
+    On combine la démonstration et le bilan d'énergie :
+    \[ \sigma_{\max}=\frac{6Ee}{L^{2}}\,x_{\max},\quad
+       x_{\max}=\sqrt{\frac{2\eta E_c}{k}},\;\; k\propto e^{3}. \]
+    Donc $x_{\max}\propto e^{-3/2}$ et :
+    \[ \boxed{\;\sigma_{\max}\propto e\cdot e^{-3/2}=e^{-1/2}\;} \]
+    Application ($e=0{,}5$~mm, $h=1$~m) : $\sigma_{\max}\approx 0{,}48$~GPa.
+  \column{0.52\textwidth}
+    \centering {\scriptsize $\sigma_{\max}$ au centre, chute de 1~m}
+    \begin{tikzpicture}[scale=0.95]
+      \draw[-{Latex}](0,0)--(7.4,0) node[right,font=\scriptsize]{$e$ (mm)};
+      \draw[-{Latex}](0,0)--(0,5) node[above,font=\scriptsize]{$\sigma_{\max}$ (MPa)};
+      \foreach \e in {0.3,0.5,0.8,1.0,1.5}{
+        \draw ({\e*4.5},0)--({\e*4.5},-0.1) node[below,font=\tiny]{\e};}
+      \foreach \s/\yc in {300/1.5,500/2.5,700/3.5,900/4.5}{
+        \draw (0,\yc)--(-0.1,\yc) node[left,font=\tiny]{\s};}
+      \draw[danger,dashed](0,4.25)--(7.0,4.25) node[right,font=\tiny,danger]{seuil 850};
+      \draw[verre,very thick,domain=0.28:1.55,samples=80,smooth]
+        plot ({\x*4.5},{482*sqrt(0.5/\x)/200});
+      \foreach \e/\s in {0.3/622,0.5/482,1.0/341,1.5/278}{
+        \fill[danger] ({\e*4.5},{\s/200}) circle (1.5pt);
+        \node[font=\tiny,above right] at ({\e*4.5},{\s/200}){\s};}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ---------- 5. Critere de rupture ----------
+\begin{frame}{Critère de rupture}
+  \footnotesize
+  Le verre est \textbf{fragile} : il casse dès que la traction de surface dépasse
+  un seuil $\sigma_c$. La \textbf{trempe} crée une précontrainte de compression de
+  surface, qui relève ce seuil ($\sigma_c\sim 850$~MPa). La rupture étant de
+  nature \textbf{statistique} (micro-défauts), on la décrit par la loi de Weibull :
+  \[ P_r(\sigma)=1-\exp\!\Big[-\big(\sigma/\sigma_\theta\big)^{m_W}\Big]. \]
+  \centering\textcolor{danger}{Conséquence : à énergie fixée, épaissir réduit
+  $\sigma_{\max}$ ($\propto 1/\sqrt{e}$), donc la probabilité de rupture.}
+\end{frame}
+
+% ---------- 6. References ----------
+\begin{frame}{Références}
+  \scriptsize
+  \begin{itemize}\itemsep2pt
+    \item Déformée et courbure d'une poutre : S.~Timoshenko, \emph{Strength of
+          Materials}, 1955 ; \emph{Euler--Bernoulli beam theory} (Wikipedia).
+    \item Verre trempé, précontrainte par échange ionique : R.~Gy,
+          \emph{Ion exchange for glass strengthening}, Mater. Sci. Eng.~B, 2008.
+    \item Rupture fragile statistique : W.~Weibull, J. Appl. Mech., 1951 ;
+          \emph{Weibull analysis of ceramics: a review} (NIH/PMC, 2024).
+    \item Chute et rupture d'écrans : \emph{Dynamic fast fracture of smartphone
+          screens} (2019).
+  \end{itemize}
+\end{frame}
+
+\end{document}
