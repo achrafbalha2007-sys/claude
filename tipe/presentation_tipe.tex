@@ -1,12 +1,17 @@
 % =====================================================================
-%  PRESENTATION TIPE (Beamer) - Filiere MP/MPI
-%  Modele SIMPLIFIE poutre 1D. Sans MCOT. Beaucoup de schemas TikZ.
+%  PRESENTATION TIPE (Beamer) - Filiere MPSI/MP
+%  Modele poutre 1D. .
 %
 %  Compilation : pdflatex presentation_tipe.tex   (x2 pour la nav.)
 %  Les figures fig_poutre_*.png sont produites par simulation_poutre.py.
 %  Un cadre de substitution s'affiche tant qu'elles n'existent pas.
 % =====================================================================
 \documentclass[11pt,aspectratio=169]{beamer}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,patterns,shapes.geometric}
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
 
 \usetheme{Madrid}
 \usecolortheme{whale}
@@ -48,12 +53,15 @@
 
 % ---- page de titre ----
 \title[Écran en verre trempé]{Optimiser l'épaisseur d'un écran protecteur\\en verre trempé pour qu'il casse moins}
-\subtitle{Modèle simplifié « poutre » --- niveau MP/MPI}
+\subtitle{Modèle « poutre »}
 \author{TIPE}
-\institute{Filière MP/MPI}
-\date{2025--2026}
+\institute{Filière MPSI/MP}
+\date{2026-2027}
+
 
 \begin{document}
+
+
 
 % ===================== Slide 1 : titre =====================
 {\setbeamertemplate{footline}{}
@@ -75,7 +83,7 @@
 }
 
 % ===================== Slide 2 : le constat =====================
-\begin{frame}{Le problème : ça casse, et toujours au même endroit}
+\begin{frame}{Le problème : ça casse,presque toujours au même endroit}
   \begin{columns}[T]
   \column{0.52\textwidth}
     \begin{itemize}
@@ -105,7 +113,7 @@
 \end{frame}
 
 % ===================== Slide 3 : problematique =====================
-\begin{frame}{Notre question}
+\begin{frame}{La question qui se pose:}
   \begin{center}
   \begin{beamercolorbox}[wd=0.92\textwidth,sep=10pt,rounded=true,shadow=true]{block body}
   \centering\large
@@ -121,14 +129,14 @@
     % trois coupes d'ecran : uniforme / parabolique / expo
     \begin{scope}
       \draw[verre,fill=verre!15](0,0) rectangle (2.4,0.4);
-      \node at (1.2,-0.35){\scriptsize uniforme};
+      \node at (1.2,-0.35){\scriptsize uniforme ?};
     \end{scope}
     \begin{scope}[xshift=3.3cm]
       \fill[verre!15] (0,0) .. controls (1.2,0.55) .. (2.4,0)
                        -- (2.4,0.18) .. controls (1.2,0.6) .. (0,0.18) -- cycle;
       \draw[verre] (0,0.18) .. controls (1.2,0.6) .. (2.4,0.18);
       \draw[verre] (0,0)--(2.4,0);
-      \node at (1.2,-0.35){\scriptsize ? plus épais au centre ?};
+      \node at (1.2,-0.35){\scriptsize  plus épais au centre ?};
     \end{scope}
     \begin{scope}[xshift=6.6cm]
       \fill[verre!15] (0,0) rectangle (2.4,0.2);
@@ -136,7 +144,7 @@
       \draw[verre](0,0.6)--(0,0.2) (2.4,0.6)--(2.4,0.2);
       \draw[verre](0,0.6) .. controls (1.2,0.2) .. (2.4,0.6);
       \draw[verre](0,0)--(2.4,0);
-      \node at (1.2,-0.35){\scriptsize ? plus épais aux bords ?};
+      \node at (1.2,-0.35){\scriptsize  plus épais aux bords ?};
     \end{scope}
   \end{tikzpicture}
   \end{center}
@@ -393,38 +401,146 @@
 
 % ===================== Slide 13 : les 3 profils =====================
 \begin{frame}{Les trois profils que l'on compare}
-  \begin{center}
-  \begin{tikzpicture}[scale=1]
-    % uniforme
-    \begin{scope}
-      \draw[verre,thick,fill=verre!12](0,0) rectangle (3,0.45);
-      \node at (1.5,1.0){\footnotesize \textbf{Uniforme}};
-      \node at (1.5,-0.4){\scriptsize $e(r)=e_0$};
-    \end{scope}
-    % parabolique (epais aux bords)
-    \begin{scope}[xshift=4cm]
-      \fill[verre!12] (0,0)--(3,0)--(3,0.75)
-        .. controls (1.5,0.15) .. (0,0.75) -- cycle;
-      \draw[verre,thick](0,0.75) .. controls (1.5,0.15) .. (3,0.75);
-      \draw[verre,thick](0,0)--(3,0)--(3,0.75) (0,0)--(0,0.75);
-      \node at (1.5,1.25){\footnotesize \textbf{Parabolique}};
-      \node at (1.5,-0.4){\scriptsize $e(r)=e_c+(e_b-e_c)\,r^2$};
-    \end{scope}
-    % exponentiel
-    \begin{scope}[xshift=8cm]
-      \fill[verre!12] (0,0)--(3,0)--(3,0.9)
-        .. controls (2.2,0.2) and (1.0,0.12) .. (0,0.28) -- cycle;
-      \draw[verre,thick](0,0.28) .. controls (1.0,0.12) and (2.2,0.2) .. (3,0.9);
-      \draw[verre,thick](0,0)--(3,0)--(3,0.9) (0,0)--(0,0.28);
-      \node at (1.5,1.25){\footnotesize \textbf{Exponentiel}};
-      \node at (1.5,-0.4){\scriptsize $e(r)=e_c\,e^{\alpha r}$};
-    \end{scope}
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.5cm}
-  \centering $r$ = distance au centre (0 = centre, 1 = bord). \quad
-  Contrainte : centre fin ($e_c\le 0{,}5$~mm), masse $\le 2{,}5\times$ l'uniforme.
+  % --- rangee 1 : les trois profils, chacun dans sa colonne ---
+  \begin{columns}[T]
+    \column{0.33\textwidth}
+      \centering
+      \textbf{\footnotesize Uniforme}\\[4pt]
+      \begin{tikzpicture}[scale=0.8]
+        \draw[verre,thick,fill=verre!12](0,0) rectangle (2.6,0.4);
+      \end{tikzpicture}\\[4pt]
+      {\scriptsize $e(s)=e_0$}
+    \column{0.33\textwidth}
+      \centering
+      \textbf{\footnotesize Parabolique}\\[4pt]
+      \begin{tikzpicture}[scale=0.8]
+        \fill[verre!12](0,0)--(2.6,0)--(2.6,0.7)
+          .. controls (1.3,0.12) .. (0,0.7)--cycle;
+        \draw[verre,thick](0,0.7) .. controls (1.3,0.12) .. (2.6,0.7);
+        \draw[verre,thick](0,0)--(2.6,0)--(2.6,0.7) (0,0)--(0,0.7);
+      \end{tikzpicture}\\[4pt]
+      {\scriptsize $e(s)=e_c+(e_b-e_c)\,s^2$}
+    \column{0.33\textwidth}
+      \centering
+      \textbf{\footnotesize Exponentiel}\\[4pt]
+      \begin{tikzpicture}[scale=0.8]
+        \fill[verre!12](0,0)--(2.6,0)--(2.6,0.85)
+          .. controls (1.8,0.2) and (0.9,0.12) .. (0,0.28)--cycle;
+        \draw[verre,thick](0,0.28) .. controls (0.9,0.12) and (1.8,0.2) .. (2.6,0.85);
+        \draw[verre,thick](0,0)--(2.6,0)--(2.6,0.85) (0,0)--(0,0.28);
+      \end{tikzpicture}\\[4pt]
+      {\scriptsize $e(s)=e_c\,e^{\alpha s}$}
+  \end{columns}
+  \vspace{0.35cm}
+  % --- rangee 2 : vue de dessus + explication de la variable s ---
+  \begin{columns}[c]
+    \column{0.28\textwidth}
+      \centering
+      \begin{tikzpicture}[scale=0.4]
+        \fill[verre!30,even odd rule,rounded corners=5pt]
+              (0,0) rectangle (3,6) (0.55,0.55) rectangle (2.45,5.45);
+        \draw[verre,thick,rounded corners=5pt](0,0) rectangle (3,6);
+        \draw[verre,thick,dashed,rounded corners=3pt](0.55,0.55) rectangle (2.45,5.45);
+        
+ode[font=\tiny,verre] at (1.5,3){$s=0$};
+      \end{tikzpicture}\\[2pt]
+      {\tiny vue de dessus : $s=1$ sur tout le bord}
+    \column{0.72\textwidth}
+      \footnotesize
+      \textbf{On prend s le paramètre représentant la proximité au bords}
+      \[ s=\max\!\left(\frac{|x|}{L/2},\ \frac{|y|}{\ell/2}\right)\in[0,1] \]
+      $s=0$ au centre, $s=1$ sur \textbf{tout} le pourtour $\Rightarrow$
+      surépaisseur \textbf{uniforme} le long des quatre bords.\\[2pt]
+      {\scriptsize Contrainte : centre fin ($e_c\le 0{,}5$~mm),
+      masse $\le 2{,}5\times$ l'uniforme.}
+  \end{columns}
 \end{frame}
+
+% ===================== Slide (NOUVELLE) : perspective + centre, exponentiel corrige =====================
+\begin{frame}{Les trois profils vus en perspective }
+  \begin{columns}[T]
+
+  % ---------- 1) UNIFORME ----------
+  \column{0.33\textwidth}
+    \centering \textbf{\footnotesize Uniforme}\\[6pt]
+    \begin{tikzpicture}[scale=0.5]
+      \fill[verre!18](0,0.5)--(4,0.5)--(4.9,1.05)--(0.9,1.05)--cycle;
+      \fill[verre!32](4,0)--(4,0.5)--(4.9,1.05)--(4.9,0.55)--cycle;
+      \fill[verre!12](0,0)--(4,0)--(4,0.5)--(0,0.5)--cycle;
+      \draw[verre,thick](0,0)--(4,0)--(4,0.5)--(0,0.5)--cycle;
+      \draw[verre,thick](4,0)--(4.9,0.55) (4,0.5)--(4.9,1.05) (0,0.5)--(0.9,1.05);
+      \draw[verre,thick](0.9,1.05)--(4.9,1.05)--(4.9,0.55);
+      \draw[danger,dashed,thick](2,0.5)--(2.9,1.05);
+      \fill[danger](2.45,0.775) circle (0.09);
+      
+ode[danger,font=\tiny,above right] at (2.45,0.775){centre};
+    \end{tikzpicture}\\[6pt]
+    {\scriptsize épaisseur constante}
+
+  % ---------- 2) PARABOLIQUE ----------
+  \column{0.33\textwidth}
+    \centering \textbf{\footnotesize Parabolique}\\[6pt]
+    \begin{tikzpicture}[scale=0.5]
+      \fill[verre!18](0,1.0) .. controls (1,0.45) and (3,0.45) .. (4,1.0)
+            -- (4.9,1.55) .. controls (3.9,1.0) and (1.9,1.0) .. (0.9,1.55) -- cycle;
+      \fill[verre!32](4,0)--(4,1.0)--(4.9,1.55)--(4.9,0.55)--cycle;
+      \fill[verre!12](0,0)--(4,0)--(4,1.0)
+            .. controls (3,0.45) and (1,0.45) .. (0,1.0)--cycle;
+      \draw[verre,thick](0,0)--(4,0)--(4,1.0)
+            .. controls (3,0.45) and (1,0.45) .. (0,1.0)--cycle;
+      \draw[verre,thick](4,0)--(4.9,0.55)--(4.9,1.55);
+      \draw[verre,thick](4,1.0)--(4.9,1.55) (0,1.0)--(0.9,1.55);
+      \draw[verre,thick](0.9,1.55) .. controls (1.9,1.0) and (3.9,1.0) .. (4.9,1.55);
+      \draw[danger,dashed,thick](2,0.5875)--(2.9,1.1375);
+      \fill[danger](2.45,0.8625) circle (0.09);
+      
+ode[danger,font=\tiny,above right] at (2.45,0.8625){centre (fin)};
+    \end{tikzpicture}\\[6pt]
+    {\scriptsize épais aux deux bords, fin au centre}
+
+  % ---------- 3) EXPONENTIEL (corrige : symetrique) ----------
+  \column{0.33\textwidth}
+    \centering \textbf{\footnotesize Exponentiel}\\[6pt]
+    \begin{tikzpicture}[scale=0.5]
+      % dessus (cuvette symetrique : fond plat, parois raides)
+      \fill[verre!18]
+        (0,1.0) .. controls (0.8,0.3) and (1.7,0.32) .. (2,0.32)
+                .. controls (2.3,0.32) and (3.2,0.3) .. (4,1.0)
+        -- (4.9,1.55)
+        .. controls (4.1,0.85) and (3.2,0.87) .. (2.9,0.87)
+        .. controls (2.6,0.87) and (1.7,0.85) .. (0.9,1.55) -- cycle;
+      \fill[verre!32](4,0)--(4,1.0)--(4.9,1.55)--(4.9,0.55)--cycle;
+      \fill[verre!12]
+        (0,0)--(4,0)--(4,1.0)
+        .. controls (3.2,0.3) and (2.3,0.32) .. (2,0.32)
+        .. controls (1.7,0.32) and (0.8,0.3) .. (0,1.0)--cycle;
+      \draw[verre,thick]
+        (0,0)--(4,0)--(4,1.0)
+        .. controls (3.2,0.3) and (2.3,0.32) .. (2,0.32)
+        .. controls (1.7,0.32) and (0.8,0.3) .. (0,1.0)--cycle;
+      \draw[verre,thick](4,0)--(4.9,0.55)--(4.9,1.55);
+      \draw[verre,thick](4,1.0)--(4.9,1.55) (0,1.0)--(0.9,1.55);
+      \draw[verre,thick]
+        (0.9,1.55) .. controls (1.7,0.85) and (2.6,0.87) .. (2.9,0.87)
+                   .. controls (3.2,0.87) and (4.1,0.85) .. (4.9,1.55);
+      \draw[danger,dashed,thick](2,0.32)--(2.9,0.87);
+      \fill[danger](2.45,0.595) circle (0.09);
+      
+ode[danger,font=\tiny,above right] at (2.45,0.595){centre (fin)};
+    \end{tikzpicture}\\[6pt]
+    {\scriptsize fin au centre, épais aux deux bords}
+
+  \end{columns}
+
+  \vspace{0.35cm}
+  \centering\footnotesize
+  Les trois profils sont \textbf{fins au centre} (point \textcolor{danger}{rouge},
+  zone tactile) et \textbf{épais sur tout le pourtour}. L'exponentiel garde
+  juste un fond central plus large et des bords qui montent plus vite.
+  \emph{Épaisseur exagérée.}
+\end{frame}
+
+
 
 % ===================== Slide 14 : pourquoi epaissir les bords =====================
 \begin{frame}{Pourquoi épaissir surtout les \emph{bords} ?}
@@ -456,66 +572,134 @@
   \end{columns}
 \end{frame}
 
-% ===================== Slide 15 : principe Monte-Carlo =====================
+% ===================== Slide 15 : principe Monte-Carlo (bullets) =====================
 \begin{frame}{Étape « simulation » --- la méthode de Monte-Carlo}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.55cm and 0.8cm,
-      box/.style={draw,rounded corners,fill=verre!10,align=center,
-                  font=\scriptsize,text width=2.3cm,minimum height=1cm},
-      ar/.style={-{Latex},thick,verre}]
-    \node[box](t){\textbf{Tirer} au hasard\\ une chute\\ (hauteur, angle)};
-    \node[box,right=of t](c){\textbf{Calculer}\\ $\sigma_{\max}$\\ (modèle poutre)};
-    \node[box,right=of c](r){\textbf{Comparer}\\ au seuil $\sigma_c$\\ casse ? oui/non};
-    \node[box,right=of r](n){\textbf{Répéter}\\ $N=5000$ fois};
-    \node[box,right=of n,fill=ok!15](p){$P=\dfrac{\text{casses}}{N}$};
-    \draw[ar](t)--(c);\draw[ar](c)--(r);\draw[ar](r)--(n);\draw[ar](n)--(p);
-    \draw[ar,gristik](n.south)+(0,-0.1) .. controls (0,-1.2) and (-6,-1.2) .. (t.south);
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.3cm}
-  \centering\footnotesize On simule des \textbf{milliers de chutes} et on compte
-  la proportion qui casse : c'est l'estimation de $P(\text{rupture})$.
+  \textbf{Idée :} chaque chute est différente (hauteur, angle, point d'impact).
+  On en simule donc un \textbf{grand nombre au hasard} et on compte la proportion
+  qui casse.
+  \vspace{0.35cm}
+  \begin{itemize}
+    \item[\textcolor{verre}{\textbf{1.}}] \textbf{Tirer} une chute au hasard :
+          hauteur $h$ et angle d'impact (selon une loi réaliste).
+    \item[\textcolor{verre}{\textbf{2.}}] \textbf{Calculer} la contrainte maximale
+          $\sigma_{\max}$ avec le modèle « poutre ».
+    \item[\textcolor{verre}{\textbf{3.}}] \textbf{Comparer} au seuil de rupture :
+          la dalle casse si $\sigma_{\max} > \sigma_c$.
+    \item[\textcolor{verre}{\textbf{4.}}] \textbf{Répéter} l'opération $N=5000$ fois.
+    \item[\textcolor{verre}{\textbf{5.}}] \textbf{Estimer} la probabilité de rupture :
+      \[ P(\text{rupture}) \;\approx\; \frac{\text{nombre de casses}}{N} \]
+  \end{itemize}
+  \vspace{0.15cm}
+  \begin{block}{Pourquoi ça marche}
+  \footnotesize Plus $N$ est grand, plus cette proportion s'approche de la vraie
+  probabilité : c'est la \textbf{loi des grands nombres}.
+  \end{block}
 \end{frame}
 
-% ===================== Slide 16 : angles realistes =====================
-\begin{frame}{On tire des angles \emph{réalistes}, pas au hasard uniforme}
-  \begin{columns}[c]
-  \column{0.5\textwidth}
-    \footnotesize
-    \begin{itemize}
-      \item Un téléphone tombe rarement parfaitement à plat.
-      \item On tire l'angle d'impact selon une \textbf{gaussienne}
-            centrée à $\mathbf{65^\circ}$ (souvent sur la tranche / le coin).
-      \item Ce sont justement les chutes les plus dangereuses.
-    \end{itemize}
-    \vspace{0.2cm}
-    \centering
-    \begin{tikzpicture}[scale=0.7]
-      \phone{0}{0}{verre}\node at (0,-1){\scriptsize $\approx 0^\circ$ (plat)};
-      \begin{scope}[xshift=2.5cm,rotate=45]\phone{0}{0}{verre}\end{scope}
-      \node at (2.5,-1){\scriptsize $\approx 45^\circ$};
-      \begin{scope}[xshift=5cm,rotate=80]\phone{0}{0}{danger}\end{scope}
-      \node[danger] at (5,-1){\scriptsize $\approx 80^\circ$ (coin)};
-    \end{tikzpicture}
-  \column{0.5\textwidth}
-    \centering
-    \begin{tikzpicture}[scale=1]
-      \draw[-{Latex}](0,0)--(4.6,0) node[right]{\footnotesize angle ($^\circ$)};
-      \draw[-{Latex}](0,0)--(0,2.8);
-      \draw[verre,very thick,domain=0.2:4.4,samples=80,smooth]
-        plot (\x,{2.3*exp(-(\x-2.9)*(\x-2.9)/0.7)});
-      \draw[danger,dashed](2.9,0)--(2.9,2.3);
-      \node[danger] at (2.9,-0.35){\footnotesize $65^\circ$};
-    \end{tikzpicture}
-  \end{columns}
+% ===================== Slide 16a : angle d'impact (inclinaison) 
+\begin{frame}{Quel angle d'impact ? (inclinaison par rapport au sol)}
+  \footnotesize
+  L'angle $\theta$ est l'inclinaison de l'écran par rapport au sol au moment du choc.
+  \vspace{0.5cm}
+  \begin{center}
+  \begin{minipage}{0.3\textwidth}\centering
+    \begin{tikzpicture}[scale=0.8]
+      \draw[thick](-0.7,0)--(1.9,0);
+      \foreach \x in {-0.6,-0.3,0,0.3,0.6,0.9,1.2,1.5,1.8}{\draw[gristik](\x,0)--(\x-0.18,-0.18);}
+      \draw[verre,thick,fill=verre!12,rounded corners=1pt](0,0) rectangle (1.5,0.16);
+    \end{tikzpicture}\\[4pt]
+    \scriptsize $\theta\approx 0^\circ$ (à plat)
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.33\textwidth}\centering
+    \begin{tikzpicture}[scale=0.8]
+      \draw[thick](-0.7,0)--(1.9,0);
+      \foreach \x in {-0.6,-0.3,0,0.3,0.6,0.9,1.2,1.5,1.8}{\draw[gristik](\x,0)--(\x-0.18,-0.18);}
+      \begin{scope}[rotate=45]
+        \draw[verre,thick,fill=verre!12,rounded corners=1pt](0,0) rectangle (1.5,0.16);
+      \end{scope}
+      \draw[danger](0.55,0) arc (0:45:0.55) node[above,font=\tiny,danger]{$45^\circ$};
+    \end{tikzpicture}\\[4pt]
+    \scriptsize $\theta\approx 45^\circ$
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.33\textwidth}\centering
+    \begin{tikzpicture}[scale=0.8]
+      \draw[thick](-0.7,0)--(1.9,0);
+      \foreach \x in {-0.6,-0.3,0,0.3,0.6,0.9,1.2,1.5,1.8}{\draw[gristik](\x,0)--(\x-0.18,-0.18);}
+      \begin{scope}[rotate=80]
+        \draw[danger,thick,fill=danger!12,rounded corners=1pt](0,0) rectangle (1.5,0.16);
+      \end{scope}
+      \draw[danger](0.5,0) arc (0:80:0.5) node[above,font=\tiny,danger]{$80^\circ$};
+    \end{tikzpicture}\\[4pt]
+    \scriptsize \textcolor{danger}{$\theta\approx 80^\circ$ (coin)}
+  \end{minipage}
+  \end{center}
+  \vspace{0.3cm}
+  \par\centering\footnotesize
+  $\theta$ petit : choc à plat (peu dangereux)\;$\rightarrow$\;$\theta$ grand : choc sur le coin (dangereux).
 \end{frame}
+
+
+% ===================== Slide 16b : loi de l'angle (gaussienne) =====================
+\begin{frame}{On tire $\theta$ selon une loi réaliste}
+  \footnotesize
+  \begin{itemize}
+    \item Tirage d'une \textbf{gaussienne} $\mu=65^\circ$, $\sigma=15^\circ$, tronquée sur $[10^\circ,90^\circ]$.
+    \item Les grands angles dominent : ce sont les chutes dangereuses.
+  \end{itemize}
+  \vspace{0.2cm}
+  \centering
+  \begin{tikzpicture}[scale=1]
+    \draw[-{Latex}](0,0)--(9,0) node[right,font=\scriptsize]{$\theta\,(^\circ)$};
+    \draw[-{Latex}](0,0)--(0,3.7) node[above,font=\scriptsize]{densité};
+    \draw[verre,very thick,domain=10:90,samples=120,smooth]
+      plot ({(\x-10)*8/80},{3*exp(-(\x-65)*(\x-65)/450)});
+    % moyenne : libelle attache au haut du trait
+    \draw[danger,dashed](5.5,0)--(5.5,3.0) node[above,font=\scriptsize,danger]{$\mu=65^\circ$};
+    % ecart-type : libelle attache a la fleche
+    \draw[ok,dashed](7,0)--(7,1.82);
+    \draw[{Latex}-{Latex},ok,thick](5.5,1.25)--(7,1.25) node[midway,above,font=\scriptsize,ok]{$\sigma=15^\circ$};
+    % troncature : libelle attache a un point (forme \draw ... node)
+    \draw (1.0,3.0) node[gristik,font=\scriptsize,right]{tronquée sur $[10^\circ,90^\circ]$};
+    % graduations : libelles attaches aux ticks
+    \foreach \x/\lab in {0/10,4/50,5.5/65,7/80,8/90}{
+      \draw (\x,0)--(\x,-0.12) node[below,font=\tiny]{\lab};}
+  \end{tikzpicture}
+\end{frame}
+
+
+
 
 % ===================== Slide 17 : resultats =====================
 \begin{frame}{Résultats : le profil change tout}
   \begin{columns}[c]
   \column{0.55\textwidth}
     \begin{center}
-    \figauto{fig_poutre_profils.png}{1.0}{profils + P(rupture)}
+    \begin{tikzpicture}[yscale=0.042,xscale=1.05]
+      \draw[-{Latex}](0,0)--(0,70) node[above,font=\scriptsize]{$P$ (\%)};
+      \draw(0,0)--(5.1,0);
+      \foreach \y in {0,20,40,60}{
+        \draw(0,\y)--(-0.12,\y) node[left,font=\tiny]{\y};
+        \draw[gray!25](0,\y)--(5.1,\y);}
+      \fill[danger!70](0.4,0) rectangle (1.4,59);
+      \fill[ok!70](2.0,0) rectangle (3.0,13);
+      \fill[verre!70](3.6,0) rectangle (4.6,10);
+      
+ode[font=\tiny] at (0.9,64){59\%};
+      
+ode[font=\tiny] at (2.5,18){13\%};
+      
+ode[font=\tiny] at (4.1,15){10\%};
+      
+ode[font=\tiny,below] at (0.9,0){Uniforme};
+      
+ode[font=\tiny,below] at (2.5,0){Parabol.};
+      
+ode[font=\tiny,below] at (4.1,0){Expon.};
+      
+ode[font=\scriptsize] at (2.5,78){Risque de casse par profil};
+    \end{tikzpicture}
     \end{center}
   \column{0.45\textwidth}
     \small
@@ -541,7 +725,44 @@
 \begin{frame}{Étape « optimisation » --- le meilleur compromis}
   \begin{columns}[c]
   \column{0.55\textwidth}
-    \figauto{fig_poutre_optim.png}{1.0}{carte $P(e_c,e_b)$}
+    \centering
+    \begin{tikzpicture}[scale=0.62]
+      % --- carte de chaleur P(e_c, e_b) dessinee en TikZ ---
+      \foreach \i in {0,...,5}{
+        \foreach \j in {0,...,3}{
+          \pgfmathtruncatemacro\P{55 - \i*9 - \j*2}
+          \pgfmathtruncatemacro\g{max(0,min(100,\P*1.6))}
+          \fill[red!\g!green!88] (\i,\j) rectangle ++(1,1);
+          
+ode[font=\tiny,white] at (\i+0.5,\j+0.5){\P};
+        }
+      }
+      \draw[step=1,gray!60,thin](0,0) grid (6,4);
+      % zone interdite par la masse (coin haut-droit)
+      \fill[pattern=north east lines,pattern color=black](5,3) rectangle (6,4);
+      
+ode[font=\tiny,align=center] at (5.5,3.5){};
+      % optimum
+      
+ode[star,star points=5,star point ratio=2.2,fill=yellow,draw=black,
+            scale=0.7] (opt) at (5.5,2.5){};
+      
+ode[font=\tiny,below=1pt of opt]{optimum};
+      % axes
+      \foreach \i/\lab in {0/0.5,1/0.8,2/1.1,3/1.4,4/1.7,5/2.0}{
+        
+ode[font=\tiny,below] at (\i+0.5,0){\lab};}
+      
+ode[font=\scriptsize,below] at (3,-0.55){$e_b$ (bord, mm)};
+      \foreach \j/\lab in {0/0.2,1/0.3,2/0.4,3/0.5}{
+        
+ode[font=\tiny,left] at (0,\j+0.5){\lab};}
+      
+ode[font=\scriptsize,rotate=90] at (-1.0,2){$e_c$ (centre, mm)};
+      
+ode[font=\tiny,align=center] at (3,4.4)
+        {\textcolor{danger}{rouge = risque fort}\ \ \textcolor{ok}{vert = risque faible}\ \ (valeurs en \%)};
+    \end{tikzpicture}
   \column{0.45\textwidth}
     \small On cherche $(e_c,e_b)$ qui minimise $P$ sous deux contraintes :
     \begin{itemize}\footnotesize
@@ -559,81 +780,224 @@
 \end{frame}
 
 
-% ===================== Slide 19 : validation RLC =====================
-\begin{frame}{Validation 1 --- l'analogie avec un circuit électrique}
+% =================================================================
+%  SEQUENCE : Validation experimentale par CIRCUIT RLC
+%  (verifie sigma_max ~ 1/sqrt(e) avec des grandeurs electriques)
+% =================================================================
+
+% ---------- 1) L'idee ----------
+\begin{frame}{Validation : remplacer la mécanique par un circuit}
   \begin{columns}[c]
-  \column{0.46\textwidth}
+  \column{0.55\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item Mesurer $\sigma$ et $e$ sur du verre est difficile.
+      \item Mais l'oscillateur mécanique et un circuit \textbf{RLC série} suivent
+            la \textbf{même équation}.
+      \item On reproduit donc le choc avec une \textbf{impulsion électrique} et on
+            vérifie la loi $\sigma_{\max}\propto 1/\sqrt{e}$ \textbf{uniquement avec
+            des grandeurs électriques}.
+    \end{itemize}
+  \column{0.45\textwidth}
     \centering
-    \begin{tikzpicture}[scale=1]
-      \draw[thick](0,0)--(0,2)--(1,2);
-      % bobine
-      \draw[verre,thick,decorate,decoration={coil,segment length=4pt,amplitude=3pt}](1,2)--(2.2,2);
-      \node[verre] at (1.6,2.4){\scriptsize $L\leftrightarrow m$};
-      % resistance
-      \draw[thick](2.2,2)--(2.5,2);
-      \draw[danger,thick](2.5,1.85) rectangle (3.5,2.15);
-      \node[danger] at (3.0,2.45){\scriptsize $R\leftrightarrow c$};
-      \draw[thick](3.5,2)--(4.5,2)--(4.5,0);
-      % condensateur
-      \draw[thick](0,0)--(2,0); \draw[ok,thick](2,-0.3)--(2,0.3);
-      \draw[ok,thick](2.3,-0.3)--(2.3,0.3); \draw[thick](2.3,0)--(4.5,0);
-      \node[ok] at (2.15,-0.6){\scriptsize $C\leftrightarrow 1/k$};
+    \begin{tikzpicture}[scale=0.9]
+      \draw[decorate,decoration={coil,segment length=3pt,amplitude=3pt},verre,thick](0,1.2)--(1.2,1.2);
+      \draw[fill=verre!12,thick](1.2,0.9) rectangle (1.9,1.5);
+      
+ode[font=\scriptsize] at (0.95,0.7){ressort + masse};
+      \draw[-{Latex},thick](2.2,1.2)--(3.0,1.2);
+      
+ode[font=\scriptsize] at (2.6,1.5){$\equiv$};
+      \draw[ok,very thick](3.3,1.35)--(3.9,1.35) (3.3,1.05)--(3.9,1.05);
+      
+ode[font=\scriptsize] at (3.6,0.7){circuit RLC};
     \end{tikzpicture}
-  \column{0.54\textwidth}
-    \footnotesize Le ressort amorti et un circuit \textbf{RLC} obéissent à la
-    \emph{même équation}. On peut donc \textbf{mesurer} le comportement à
-    l'oscilloscope.
-    \begin{center}\scriptsize
+  \end{columns}
+\end{frame}
+
+% ---------- 2) Le dictionnaire de l'analogie ----------
+\begin{frame}{Le « dictionnaire » de l'analogie}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering\footnotesize
+    Même équation du 2\textsuperscript{nd} ordre :
+    \[ m\ddot{x}+c\dot{x}+kx=F(t) \]
+    \[ L\ddot{q}+R\dot{q}+\tfrac{1}{C}q=e(t) \]
+    \vspace{0.2cm}
     \begin{tabular}{ll}
     \hline
     Mécanique & Électrique \\
     \hline
-    masse $m$ & bobine $L$ \\
+    masse $m$ & inductance $L$ \\
     amortissement $c$ & résistance $R$ \\
     raideur $k$ & $1/C$ \\
+    fléche $x$ & charge $q$ \\
+    vitesse $\dot x$ & courant $i$ \\
+    choc $F$ & impulsion de tension \\
     \hline
     \end{tabular}
-    \end{center}
-    On vérifie : période $\propto\sqrt{C}$, image de $T\propto e^{-3/2}$.
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      % masse-ressort-amortisseur
+      \draw[thick](0,2.4)--(2.4,2.4);
+      \foreach \xx in {0,0.3,...,2.4}{\draw[gristik](\xx,2.4)--(\xx-0.2,2.6);}
+      \draw[decorate,decoration={coil,segment length=3pt,amplitude=4pt},verre,thick](0.4,2.4)--(0.4,1.4);
+      \draw[danger,thick](1.0,2.4)--(1.0,1.9) (0.85,1.9) rectangle (1.15,1.5);
+      \draw[fill=verre!12,thick](0.1,0.8) rectangle (1.3,1.4);
+      
+ode[font=\scriptsize] at (0.7,1.1){$m$};
+      
+ode[verre,font=\scriptsize] at (0.0,1.9){$k$};
+      
+ode[danger,font=\scriptsize] at (1.45,1.7){$c$};
+    \end{tikzpicture}
   \end{columns}
 \end{frame}
 
-% ===================== Slide 20 : experience acoustique =====================
-\begin{frame}{Validation 2 --- écouter la rigidité de l'écran}
+\begin{frame}{Le montage : RLC série + générateur d'impulsions}
+  \centering
+  \begin{tikzpicture}[scale=1.2, every node/.style={font=\scriptsize}]
+    % --- fils de la boucle (avec coupures pour les composants) ---
+    \draw[thick] (0,0.7) -- (0,0) -- (4,0);          % bas
+    \draw[thick] (0,1.3) -- (0,2) -- (0.6,2);        % haut-gauche
+    \draw[thick] (1.6,2) -- (2.2,2);                 % entre L et R
+    \draw[thick] (3.0,2) -- (4,2) -- (4,1.18);       % vers la capacite
+    \draw[thick] (4,0.92) -- (4,0);                  % capacite -> bas
+
+    % --- generateur d'impulsions ---
+    \draw[thick] (0,1) circle (0.3);
+    \draw[thick] (-0.12,0.95) -- (-0.04,0.95) -- (-0.04,1.12)
+                 -- (0.04,1.12) -- (0.04,0.9) -- (0.12,0.9);
+    
+ode[left] at (-0.45,1) {GBF};
+
+    % --- inductance L ---
+    \draw[verre,thick,decorate,decoration={coil,segment length=4pt,amplitude=4pt}]
+         (0.6,2) -- (1.6,2);
+    
+ode[verre] at (1.1,2.45) {$L$};
+
+    % --- resistance R ---
+    \draw[danger,thick] (2.2,1.8) rectangle (3.0,2.2);
+    
+ode[danger] at (2.6,2.45) {$R$};
+
+    % --- condensateur C ---
+    \draw[ok,very thick] (3.65,1.18) -- (4.35,1.18);
+    \draw[ok,very thick] (3.65,0.92) -- (4.35,0.92);
+    
+ode[ok,right] at (4.45,1.05) {$C$};
+
+    % --- oscilloscope sur C ---
+    \draw[gray,dashed] (4.35,1.18) -- (5.2,1.6);
+    \draw[gray,dashed] (4.35,0.92) -- (5.2,0.5);
+    \draw[thick,rounded corners=2pt] (5.2,0.45) rectangle (6.4,1.65);
+    
+ode at (5.8,1.05) {$u_C(t)$};
+    
+ode at (5.8,1.95) {oscilloscope};
+  \end{tikzpicture}
+
+  \vspace{0.3cm}
+  \par\footnotesize On fixe $L$, $R$ et l'\textbf{impulsion} ; on lit $u_C(t)$ sur
+  l'oscilloscope. Le condensateur $C$ représente l'épaisseur.
+\end{frame}
+
+
+
+
+% ---------- 5) Protocole + lecture oscillo ----------
+\begin{frame}{Protocole de mesure}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \footnotesize
+    \begin{enumerate}
+      \item Fixer $L$, $R$, et l'amplitude/durée de l'\textbf{impulsion}.
+      \item Pour chaque capacité $C_i$ :
+      \begin{itemize}\scriptsize
+        \item envoyer l'impulsion,
+        \item relever $u_{C,\max}$ (1\textsuperscript{er} pic) et la
+              pseudo-période $T$.
+      \end{itemize}
+      \item Calculer $e_i\propto C_i^{-1/3}$, $\;q_{\max}=C_i\,u_{C,\max}$,
+            $\;\sigma_i\propto e_i\,q_{\max}$.
+      \item Tracer $\sigma$ en fonction de $e$ (échelle log-log).
+    \end{enumerate}
+  \column{0.5\textwidth}
+    \centering {\scriptsize régime transitoire lu à l'oscilloscope}\\[2pt]
+    \begin{tikzpicture}[scale=0.9]
+      \draw[-{Latex}](0,0)--(3.6,0) node[right,font=\tiny]{$t$};
+      \draw[-{Latex}](0,-1)--(0,1.4) node[above,font=\tiny]{$u_C$};
+      \draw[verre,thick,smooth,domain=0:3.3,samples=200]
+            plot(\x,{1.1*exp(-0.7*\x)*cos(\x*520)});
+      \draw[danger,dashed](0,1.1)--(0.35,1.1);
+      
+ode[danger,font=\tiny,left] at (0,1.1){$u_{C,\max}$};
+      \draw[{Latex}-{Latex}](0.35,-0.75)--(1.05,-0.75) node[midway,below,font=\tiny]{$T$};
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ---------- 6) Resultat attendu ----------
+\begin{frame}{Résultat attendu : la pente $-1/2$}
   \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
-    \begin{tikzpicture}[scale=0.9]
-      \draw[verre,thick,fill=verre!8,rounded corners=3pt](0,0) rectangle (3,4.2);
-      % grille 3x3 de points d'impact
-      \foreach \x in {0.6,1.5,2.4}{\foreach \y in {0.7,2.1,3.5}{
-        \fill[danger](\x,\y) circle (1.5pt);}}
-      % onde sonore vers micro
-      \draw[verre](2.4,3.5) ++(0.2,0.2) arc (-30:30:0.4);
-      \draw[verre](2.4,3.5) ++(0.35,0.35) arc (-30:30:0.7);
-      \node at (1.5,-0.4){\scriptsize grille de 3$\times$3 impacts légers};
+    \begin{tikzpicture}[scale=0.95]
+      \draw[-{Latex}](0,0)--(4,0) node[right,font=\scriptsize]{$\ln e$};
+      \draw[-{Latex}](0,0)--(0,3) node[above,font=\scriptsize]{$\ln \sigma$};
+      \draw[verre,very thick](0.4,2.5)--(3.6,0.9);
+      \foreach \x/\y in {0.6/2.4,1.2/2.1,1.9/1.75,2.6/1.4,3.3/1.05}{
+        \fill[danger](\x,\y) circle (2pt);}
+      
+ode[verre,font=\scriptsize] at (2.6,2.3){pente $\approx -\tfrac12$};
     \end{tikzpicture}
   \column{0.5\textwidth}
-    \footnotesize On tapote l'écran en plusieurs points et on enregistre le son
-    avec un smartphone, puis on fait une \textbf{FFT} :
-    \begin{itemize}
-      \item zone \textbf{rigide} (épaisse) $\rightarrow$ son \textbf{aigu}
-            (haute fréquence)
-      \item zone \textbf{souple} $\rightarrow$ son \textbf{grave}
-    \end{itemize}
-    \vspace{0.15cm}
-    \centering
-    \begin{tikzpicture}[scale=0.8]
-      \draw[-{Latex}](0,0)--(3.6,0) node[right]{\scriptsize $f$};
-      \draw[-{Latex}](0,0)--(0,1.8);
-      \draw[verre,thick](0.6,0)--(0.6,1.4) node[above]{\scriptsize grave};
-      \draw[danger,thick](2.6,0)--(2.6,1.0) node[above]{\scriptsize aigu};
-    \end{tikzpicture}\\
-    \scriptsize $\Rightarrow$ on relie « basse fréquence » à « forte contrainte ».
+    \footnotesize
+    \begin{block}{Conclusion de l'expérience}
+    Les points $(\ln e,\ln\sigma)$ s'alignent sur une droite de pente
+    $\boxed{-\tfrac12}$ : la loi $\sigma_{\max}\propto e^{-1/2}$ est
+    \textbf{vérifiée}, uniquement avec des mesures électriques.
+    \end{block}
+    \scriptsize C'est la dynamique du choc (oscillateur amorti) qui est validée,
+    pas le verre lui-même.
   \end{columns}
 \end{frame}
 
-% ===================== Slide 21 : limite 1D vs 2D =====================
+% ---------- 7) Tableau + limites ----------
+\begin{frame}{Tableau de mesures et limites}
+  \centering\scriptsize
+  \begin{tabular}{cccccc}
+  \hline
+  $C$ (nF) & $e\propto C^{-1/3}$ (u.a.) & $u_{C,\max}$ (V) & $q_{\max}=C\,u_{C,\max}$ & $\sigma\propto e\,q_{\max}$ & $\ln\sigma$ \\
+  \hline
+  \dots & \dots & \dots & \dots & \dots & \dots \\
+  \dots & \dots & \dots & \dots & \dots & \dots \\
+  \dots & \dots & \dots & \dots & \dots & \dots \\
+  \hline
+  \end{tabular}
+  \vspace{0.4cm}
+  \begin{columns}[T]
+  \column{0.5\textwidth}
+    \footnotesize\textbf{Ce qui est validé}
+    \begin{itemize}\scriptsize
+      \item la dépendance $\sigma_{\max}\propto e^{-1/2}$,
+      \item le régime transitoire d'un système du 2\textsuperscript{nd} ordre.
+    \end{itemize}
+  \column{0.5\textwidth}
+    \footnotesize\textbf{Limites}
+    \begin{itemize}\scriptsize
+      \item l'analogie reproduit la \emph{dynamique}, pas la géométrie ni la
+            rupture ;
+      \item garder $R$ faible (régime pseudo-périodique) ;
+      \item impulsion brève devant $T$ (approximation du choc).
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+
+% ===================== Slide 20 : limite 1D vs 2D =====================
 \begin{frame}{Limite 1 --- poutre (1D) ou plaque (2D) ?}
   \begin{columns}[c]
   \column{0.5\textwidth}
@@ -664,7 +1028,7 @@
   \end{columns}
 \end{frame}
 
-% ===================== Slide 22 : limite fabrication =====================
+% ===================== Slide 21 : limite fabrication =====================
 \begin{frame}{Limite 2 --- est-ce fabricable ?}
   \begin{columns}[c]
   \column{0.5\textwidth}
@@ -701,7 +1065,7 @@
   \end{columns}
 \end{frame}
 
-% ===================== Slide 23 : conclusion =====================
+% ===================== Slide 22 : conclusion =====================
 \begin{frame}{Conclusion}
   \begin{columns}[c]
   \column{0.5\textwidth}
@@ -728,11 +1092,11 @@
   \end{columns}
 \end{frame}
 
-% ===================== Slide 24 : ouvertures =====================
+% ===================== Slide 23 : ouvertures =====================
 \begin{frame}{Ouvertures et bibliographie}
   \begin{columns}[T]
   \column{0.5\textwidth}
-    \textbf{Pour aller plus loin}
+    \textbf{ }
     \footnotesize
     \begin{itemize}
       \item Modèle \textbf{plaque 2D} (Kirchhoff--Love) + contact de Hertz.
@@ -756,4 +1120,98 @@
   \begin{center}\Large\textcolor{verre}{Merci de votre attention.}\end{center}
 \end{frame}
 
+\begin{frame}[fragile,allowframebreaks]{Annexe --- Code Python}
+\tiny
+\begin{verbatim}
+# -*- coding: utf-8 -*-
+# TIPE - Modele SIMPLIFIE (poutre 1D)
+# Probabilite de rupture par Monte-Carlo.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+rng = np.random.default_rng(2026)
+
+# --- constantes (verre trempe + smartphone) ---
+E, G = 73e9, 9.81          # module d'Young (Pa), pesanteur
+M_PHONE = 0.18             # masse du telephone (kg)
+ETA = 0.05                 # fraction d'energie stockee en flexion
+B = 0.020                  # largeur de la bande de verre (m)
+SIG_MU, SIG_SD = 850e6, 120e6   # seuil de rupture gaussien (Pa)
+KAPPA = 0.7                # surcontrainte au coin
+L_C, L_B = 0.050, 0.025    # portee effective : centre / coin (m)
+E0 = 0.5e-3                # epaisseur uniforme de reference (m)
+N_MC = 5000
+
+# --- profils d'epaisseur e(r), r de 0 (centre) a 1 (bord) ---
+def uniforme(r, e0=E0):
+    return np.full_like(np.asarray(r, float), e0)
+
+def parabolique(r, e_c=0.5e-3, e_b=1.2e-3):
+    return e_c + (e_b - e_c) * np.asarray(r, float) ** 2
+
+def exponentiel(r, e_c=0.5e-3, e_b=1.2e-3):
+    return e_c * np.exp(np.log(e_b / e_c) * np.asarray(r, float))
+
+def epaisseur_moyenne(prof, **kw):
+    r = np.linspace(0, 1, 400)
+    return np.trapz(prof(r, **kw) * 2 * r, r) / np.trapz(2 * r, r)
+
+# --- coeur du modele : contrainte de flexion (poutre 1D) ---
+def contrainte(e, L, Ek, Kc):
+    I = B * e ** 3 / 12.0           # moment quadratique (RDM)
+    k = 48.0 * E * I / L ** 3       # raideur poutre : k ~ e^3
+    x = np.sqrt(2.0 * ETA * Ek / k) # 1/2 k x^2 = eta Ek -> fleche max
+    return 6.0 * E * e * x / L ** 2 * Kc
+
+def gauss_tronquee(mu, s, lo, hi, n):
+    out = np.empty(n); k = 0
+    while k < n:
+        x = rng.normal(mu, s, n - k); x = x[(x >= lo) & (x <= hi)]
+        out[k:k + x.size] = x; k += x.size
+    return out
+
+def monte_carlo(prof, N=N_MC, **kw):
+    theta = gauss_tronquee(65, 15, 10, 90, N)     # angle de chute (deg)
+    h = gauss_tronquee(1.0, 0.25, 0.30, 2.0, N)   # hauteur (m)
+    v = np.sqrt(2 * G * h); Ek = 0.5 * M_PHONE * v ** 2
+    r = np.clip(theta / 90 + rng.normal(0, 0.05, N), 0, 1)
+    L = L_C - (L_C - L_B) * r                     # portee selon la zone
+    Kc = 1 + KAPPA * r                            # coin = surcontrainte
+    e = prof(r, **kw)
+    sigma = contrainte(e, L, Ek, Kc)
+    sigma_c = np.maximum(rng.normal(SIG_MU, SIG_SD, N), 1e6)
+    return (sigma > sigma_c).mean(), sigma
+
+def optimise():
+    emu = epaisseur_moyenne(uniforme)
+    ec_g = np.linspace(0.2e-3, 0.5e-3, 7)
+    eb_g = np.linspace(0.5e-3, 2.0e-3, 16)
+    P = np.full((ec_g.size, eb_g.size), np.nan); best = None
+    for i, ec in enumerate(ec_g):
+        for j, eb in enumerate(eb_g):
+            if eb < ec or epaisseur_moyenne(parabolique, e_c=ec, e_b=eb) > 2.5 * emu:
+                continue
+            p, _ = monte_carlo(parabolique, N=3000, e_c=ec, e_b=eb)
+            P[i, j] = p
+            if best is None or p < best[0]:
+                best = (p, ec, eb)
+    return ec_g, eb_g, P, best
+
+if __name__ == "__main__":
+    v1 = np.sqrt(2 * G * 1.0); Ek1 = 0.5 * M_PHONE * v1 ** 2
+    print("v=%.2f m/s  Ek=%.2f J" % (v1, Ek1))
+    for nom, f, kw in [("Uniforme", uniforme, {"e0": E0}),
+                       ("Parabolique", parabolique, {"e_c":0.5e-3,"e_b":1.2e-3}),
+                       ("Exponentiel", exponentiel, {"e_c":0.5e-3,"e_b":1.2e-3})]:
+        p, s = monte_carlo(f, **kw)
+        print(nom, "P=%.1f%%" % (p*100))
+    ec_g, eb_g, P, best = optimise()
+    print("Optimum P=%.1f%% ec=%.2fmm eb=%.2fmm"
+          % (best[0]*100, best[1]*1e3, best[2]*1e3))
+\end{verbatim}
+\end{frame}
+
 \end{document}
+
+
