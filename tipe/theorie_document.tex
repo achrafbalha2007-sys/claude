@@ -1,0 +1,207 @@
+% =====================================================================
+%  Theorie - basee sur le cours d'elasticite (partie II) fourni.
+%  Modele du document : poutre ENCASTREE, M(x)=F(L-x), EI u_y''=M,
+%  u_y(x)=(F/EI)(L x^2/2 - x^3/6), I = l_y^3 l_z /12.
+%  Compilable seul : pdflatex theorie_document.tex
+% =====================================================================
+\documentclass[11pt,aspectratio=169]{beamer}
+\usetheme{Madrid}\usecolortheme{whale}
+\setbeamertemplate{navigation symbols}{}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+\usepackage{amsmath,amssymb}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta,positioning,decorations.pathmorphing,calc}
+\definecolor{verre}{RGB}{30,120,180}
+\definecolor{danger}{RGB}{200,40,40}
+\definecolor{ok}{RGB}{30,150,90}
+\definecolor{gristik}{RGB}{120,120,120}
+
+\begin{document}
+
+\section{Étude théorique (élasticité)}
+
+% ---------- 1. Hooke ----------
+\begin{frame}{Loi de comportement : élasticité linéaire (Hooke)}
+  \footnotesize
+  Pour des sollicitations faibles, la réponse est élastique linéaire. En traction
+  uniaxiale (partie II.1 du cours) :
+  \[ \varepsilon_{xx}=\frac{\sigma_{xx}}{E},\qquad
+     \varepsilon_{yy}=\varepsilon_{zz}=-\frac{\nu}{E}\,\sigma_{xx}, \]
+  avec $E$ le \textbf{module d'Young} (dimension d'une pression) et $\nu$ le
+  \textbf{coefficient de Poisson} ($-1<\nu<0{,}5$).
+  \medskip
+  \begin{center}\scriptsize
+  $E_{\text{gel}}\!\approx\!10^{2}$~Pa \;;\;
+  $E_{\text{caoutchouc}}\!\approx\!10^{6}$~Pa \;;\;
+  $E_{\text{métal}}\!\approx\!10^{11}$~Pa \;;\;
+  $E_{\text{verre}}\!\approx\!7\times10^{10}$~Pa \;;\;
+  $\nu_{\text{verre}}\!\approx\!0{,}22$.
+  \end{center}
+  \medskip
+  \centering\textcolor{verre}{C'est la seule loi de comportement utilisée ;
+  toute la suite en découle.}
+\end{frame}
+
+% ---------- 2. Modele poutre encastree ----------
+\begin{frame}{Modèle : une zone de bord en flexion encastrée}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      % mur (encastrement)
+      \draw[thick](0,-1.1)--(0,1.1);
+      \foreach \yy in {-1.0,-0.7,...,1.0}{\draw[gristik](0,\yy)--(-0.25,\yy+0.22);}
+      % ligne neutre au repos (pointilles) et flechie
+      \draw[gray,dashed](0,0)--(3.6,0);
+      \draw[verre,very thick](0,0) .. controls (2.2,-0.45) .. (3.6,-1.05);
+      \draw[-{Latex},danger,thick](3.6,0.0)--(3.6,-1.0) node[midway,right,font=\tiny]{$\vec F$};
+      \draw[{Latex}-{Latex}](0,-1.4)--(3.6,-1.4) node[midway,below,font=\tiny]{$L$};
+      \node[font=\tiny] at (1.7,0.35){fibre neutre};
+      \node[font=\tiny,danger] at (4.2,-1.05){$u_y(L)$};
+    \end{tikzpicture}
+  \column{0.5\textwidth}
+    \footnotesize
+    On modélise la zone sollicitée (un bord, un coin) par une \textbf{poutre
+    encastrée} en $x=0$, libre en $x=L$, soumise à $\vec F=F\,\vec e_y$
+    (partie II.4 du cours).
+    \medskip\\
+    La \textbf{fibre neutre} (centre d'inertie des sections) ne s'allonge pas ; on
+    en cherche le déplacement vertical $u_y(x)$, la \textbf{déformée}.
+    \medskip\\
+    \scriptsize Dimensions : $L\approx 30$~mm, largeur $l_z=b\approx 20$~mm,
+    épaisseur $l_y=e\approx 0{,}5$~mm.
+  \end{columns}
+\end{frame}
+
+% ---------- 3. Effort tranchant et moment flechissant ----------
+\begin{frame}{Efforts internes : effort tranchant et moment fléchissant}
+  \begin{columns}[c]
+  \column{0.46\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \draw[thick](0,-1.0)--(0,1.0);
+      \foreach \yy in {-0.9,-0.6,...,0.9}{\draw[gristik](0,\yy)--(-0.22,\yy+0.2);}
+      \draw[verre,very thick](0,0)--(3.4,0);
+      \draw[-{Latex},danger,thick](3.4,0.7)--(3.4,0.05) node[midway,right,font=\tiny]{$F$};
+      \draw[dashed](1.7,1.0)--(1.7,-1.0);
+      \node[font=\tiny] at (1.7,-1.25){coupure en $x$};
+      \draw[{Latex}-{Latex}](0,0.85)--(1.7,0.85) node[midway,above,font=\tiny]{$x$};
+    \end{tikzpicture}
+  \column{0.54\textwidth}
+    \footnotesize
+    Équilibre statique global : $\;R_y=-F,\quad M_e=-LF.$
+    \medskip\\
+    Sur la portion $[0,x]$, équilibre des forces et des moments :
+    \[ V_y(x)=-R_y=F,\qquad M(x)=-M_e-xV_y(x)=F(L-x). \]
+    \begin{block}{Résultat clé (statique)}
+    \centering $M(x)=F(L-x)$, maximal à l'encastrement : $M_{\max}=FL$.
+    \end{block}
+  \end{columns}
+\end{frame}
+
+% ---------- 4. Contrainte locale et moment quadratique ----------
+\begin{frame}{Contrainte locale et moment quadratique}
+  \begin{columns}[c]
+  \column{0.42\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      \draw[verre,thick,fill=verre!10](0,-1.4) rectangle (0.5,1.4);
+      \draw[dashed](-0.2,0)--(2.0,0) node[right,font=\tiny]{ligne neutre};
+      \fill[danger!40](0,0.75) rectangle (0.5,0.9);
+      \draw[{Latex}-{Latex}](0.62,0)--(0.62,0.82) node[midway,right,font=\tiny]{$y$};
+      \draw[-{Latex},danger](0.9,0.82)--(1.7,0.82) node[right,font=\tiny]{$\mathrm{d}F$};
+      \draw[{Latex}-{Latex}](-0.32,-1.4)--(-0.32,1.4) node[midway,left,font=\tiny]{$l_y=e$};
+    \end{tikzpicture}
+  \column{0.58\textwidth}
+    \footnotesize
+    Une fibre à la hauteur $y$ subit $\varepsilon_{xx}=-y/R$, donc (Hooke) :
+    \[ \sigma_{xx}=E\,\varepsilon_{xx}=-E\,\frac{y}{R}. \]
+    Le moment de la force $\mathrm{d}F=\sigma_{xx}\,\mathrm{d}S$ par rapport à la
+    ligne neutre, intégré sur la section :
+    \[ M(x)=\int_{S}\frac{E\,y^{2}}{R}\,\mathrm{d}S=\frac{EI}{R},\quad
+       I=\int_{S}y^{2}\mathrm{d}S=\frac{l_y^{3}\,l_z}{12}=\frac{e^{3}b}{12}. \]
+    \centering\textcolor{verre}{$I$ : moment quadratique de la section.}
+  \end{columns}
+\end{frame}
+
+% ---------- 5. Equation de la deformee ----------
+\begin{frame}{Équation de la déformée}
+  \footnotesize
+  En reliant la courbure au déplacement, $\dfrac{1}{R}\approx\dfrac{\mathrm{d}^{2}u_y}{\mathrm{d}x^{2}}$,
+  on obtient l'équation de la poutre :
+  \[ EI\,\frac{\mathrm{d}^{2}u_y}{\mathrm{d}x^{2}}=M(x)=F(L-x). \]
+  Conditions aux limites à l'encastrement : $\;u_y(0)=0\;$ et $\;u_y'(0)=0.$
+  \medskip\\
+  Une double intégration donne la \textbf{déformée} (résultat du cours, II.4) :
+  \[ \boxed{\;u_y(x)=\frac{F}{EI}\left(\frac{L x^{2}}{2}-\frac{x^{3}}{6}\right)\;} \]
+  d'où la fléche à l'extrémité libre :
+  \[ u_{y}(L)=\frac{F L^{3}}{3EI}\equiv u_{\max}. \]
+\end{frame}
+
+% ---------- 6. DEMONSTRATION sigma_max(u_max) ----------
+\begin{frame}{Relation entre $\sigma_{\max}$ et la fléche $u_{\max}$}
+  \footnotesize
+  \textbf{(1)} La contrainte est maximale en peau ($y=\pm e/2$), à l'encastrement
+  ($R$ minimal) :
+  \[ \sigma_{\max}=E\,\frac{e}{2}\,\frac{1}{R_{\min}}
+      =E\,\frac{e}{2}\,\frac{M_{\max}}{EI}=\frac{e}{2}\frac{FL}{I}. \]
+  \textbf{(2)} Or $u_{\max}=\dfrac{FL^{3}}{3EI}\Rightarrow F=\dfrac{3EI\,u_{\max}}{L^{3}}$,
+  donc $M_{\max}=FL=\dfrac{3EI\,u_{\max}}{L^{2}}$ et
+  $\;\kappa_{\max}=\dfrac{M_{\max}}{EI}=\dfrac{3\,u_{\max}}{L^{2}}.$
+  \medskip\\
+  \textbf{Conclusion} (1)+(2) :
+  \[ \boxed{\;\sigma_{\max}=E\,\frac{e}{2}\,\frac{3\,u_{\max}}{L^{2}}
+      =\frac{3\,E\,e}{2L^{2}}\,u_{\max}\;}\qquad\square \]
+\end{frame}
+
+% ---------- 7. Etude energetique + graphe ----------
+\begin{frame}{Étude énergétique : $\sigma_{\max}\propto 1/\sqrt{e}$}
+  \begin{columns}[c]
+  \column{0.48\textwidth}
+    \footnotesize
+    À la chute, l'énergie $E_c=mgh$ est fixée. Une fraction $\eta$ est stockée en
+    flexion :
+    \[ \tfrac12 k\,u_{\max}^{2}=\eta E_c,\quad k=\frac{3EI}{L^{3}}=\frac{Eb}{4L^{3}}e^{3}\propto e^{3}. \]
+    Donc $u_{\max}=\sqrt{2\eta E_c/k}\propto e^{-3/2}$, et avec
+    $\sigma_{\max}=\frac{3Ee}{2L^{2}}u_{\max}$ :
+    \[ \boxed{\;\sigma_{\max}\propto e\cdot e^{-3/2}=e^{-1/2}\;} \]
+    \scriptsize ($h=1$~m, $L=30$~mm, $e=0{,}5$~mm : $u_{\max}\!\approx\!10$~mm,
+    $M\!\approx\!0{,}5$~N$\cdot$m, $\sigma_{\max}\!\approx\!0{,}62$~GPa.)
+  \column{0.52\textwidth}
+    \centering {\scriptsize $\sigma_{\max}$ en bord, chute de 1~m}
+    \begin{tikzpicture}[scale=0.95]
+      \draw[-{Latex}](0,0)--(7.4,0) node[right,font=\scriptsize]{$e$ (mm)};
+      \draw[-{Latex}](0,0)--(0,5) node[above,font=\scriptsize]{$\sigma_{\max}$ (MPa)};
+      \foreach \e in {0.3,0.5,0.8,1.0,1.5}{
+        \draw ({\e*4.5},0)--({\e*4.5},-0.1) node[below,font=\tiny]{\e};}
+      \foreach \s/\yc in {300/1.5,500/2.5,700/3.5,900/4.5}{
+        \draw (0,\yc)--(-0.1,\yc) node[left,font=\tiny]{\s};}
+      \draw[danger,dashed](0,4.25)--(7.0,4.25) node[right,font=\tiny,danger]{seuil 850};
+      \draw[verre,very thick,domain=0.28:1.55,samples=80,smooth]
+        plot ({\x*4.5},{622*sqrt(0.5/\x)/200});
+      \foreach \e/\s in {0.3/803,0.5/622,1.0/440,1.5/359}{
+        \fill[danger] ({\e*4.5},{\s/200}) circle (1.5pt);
+        \node[font=\tiny,above right] at ({\e*4.5},{\s/200}){\s};}
+    \end{tikzpicture}
+  \end{columns}
+\end{frame}
+
+% ---------- 8. References ----------
+\begin{frame}{Références}
+  \scriptsize
+  \begin{itemize}\itemsep2pt
+    \item \textbf{Cours d'élasticité} (document fourni) : traction uniaxiale et
+          loi de Hooke (II.1), flexion d'une poutre encastrée, effort tranchant,
+          moment fléchissant, déformée $u_y(x)$ et $I=l_y^{3}l_z/12$ (II.4).
+    \item Modes de vibration d'une poutre (II.6) : permettent de \emph{mesurer}
+          $E$ via la fréquence propre $f_0=\tfrac{1}{2\pi}\sqrt{EI/\rho S}\,(1{,}875/L)^{2}$.
+    \item S.~Timoshenko, \emph{Strength of Materials}, 1955 ;
+          \emph{Euler--Bernoulli beam theory} (Wikipedia).
+    \item Verre trempé : R.~Gy, \emph{Mater. Sci. Eng.~B}, 2008.
+    \item Rupture fragile : W.~Weibull, \emph{J. Appl. Mech.}, 1951.
+  \end{itemize}
+\end{frame}
+
+\end{document}
