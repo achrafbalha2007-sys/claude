@@ -1,4 +1,4 @@
-% =====================================================================
+%=====================================================================
 %  PRESENTATION TIPE (Beamer) - Filiere MPSI/MP
 %  Modele poutre 1D. .
 %
@@ -12,12 +12,14 @@
 \definecolor{verre}{RGB}{30,120,180}
 \definecolor{danger}{RGB}{200,40,40}
 \definecolor{ok}{RGB}{30,150,90}
+\usepackage{multirow}
 
 \usetheme{Madrid}
 \usecolortheme{whale}
 \setbeamertemplate{navigation symbols}{}
 \setbeamertemplate{caption}[numbered]
 
+\usepackage{amsmath}
 \usepackage[utf8]{inputenc}
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
@@ -74,13 +76,54 @@
     \sol{-1}{4}
     \phone{1.5}{1.3}{verre}
     \draw[-{Latex[length=3mm]},danger,very thick](1.5,2.4)--(1.5,2.0);
-    \node[danger] at (3.1,2.2){\footnotesize chute};
+    
+ode[danger] at (3.1,2.2){\footnotesize chute};
     % petite fissure au coin
     \draw[danger,thick](1.18,0.72)--(1.32,0.95)--(1.22,1.15)--(1.36,1.35);
   \end{tikzpicture}
   \end{center}
+  \vfill
+  \hfill{\Large\bfseries\textcolor{verre}{BALHA Achraf}}\hspace{1.2em}
+  \vspace{0.3cm}
 \end{frame}
 }
+% ===================== Slide : Motivation =====================
+\begin{frame}{Motivation}
+  \begin{columns}[c]
+  \column{0.5\textwidth}
+    \centering
+    \IfFileExists{fc23c2280ceeb0d2edc34ce22218e61e-1540472534.jpg}{%
+      \includegraphics[width=\linewidth]{fc23c2280ceeb0d2edc34ce22218e61e-1540472534.jpg}}{%
+      \fbox{\parbox[c][4cm][c]{0.9\linewidth}{\centering\footnotesize
+      [image introuvable : vérifier le nom du fichier]}}}\\[3pt]
+    {\tiny Source : RTBF}
+  \column{0.5\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item Des millions d'écrans de smartphone se brisent chaque année lors
+            d'une simple \textbf{chute}.
+      \item La fissure s'amorce presque toujours à un \textbf{coin} ou un
+            \textbf{bord}.
+      \item Il est alors plus sécurisé qui permet la protection de l'écran du téléphone dont la réparation coute plusieurs fois le cout d'un écran periphérique
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+% ===================== Slide : Problématique =====================
+\begin{frame}{Problématique}
+  \vfill
+  \begin{center}
+  \begin{beamercolorbox}[wd=0.92\textwidth,sep=14pt,rounded=true,shadow=true]{block body}
+  \centering\large
+  \textbf{Comment fabriquer un écran protecteur en verre trempé à
+  une épaisseur \emph{non uniforme}}
+  \textbf{pour réduire la probabilité de rupture}, sans sacrifier la tactilité
+  ni la masse ?
+  \end{beamercolorbox}
+  \end{center}
+  \vfill
+\end{frame}
+
 
 % ===================== Slide 2 : le constat =====================
 \begin{frame}{Le problème : ça casse,presque toujours au même endroit}
@@ -88,12 +131,12 @@
   \column{0.52\textwidth}
     \begin{itemize}
       \item Un smartphone tombe en moyenne plusieurs fois par an.
-      \item Les écrans en verre trempé sont durs\dots\ mais cassants.
+      \item Les écrans en verre trempé sont conçus etre durs mais ils restent cassants.
       \item Les fissures partent presque toujours d'un \textbf{coin} ou d'un \textbf{bord}.
     \end{itemize}
     \vspace{0.3cm}
     \begin{block}{Intuition de départ}
-      Et si on mettait \textbf{plus de verre là où ça casse} (les bords)
+      Et si on mettait \textbf{plus de verre là où ça casse}
       et \textbf{moins au centre} (pour garder le toucher) ?
     \end{block}
   \column{0.46\textwidth}
@@ -112,63 +155,254 @@
   \end{columns}
 \end{frame}
 
-% ===================== Slide 3 : problematique =====================
-\begin{frame}{La question qui se pose:}
-  \begin{center}
-  \begin{beamercolorbox}[wd=0.92\textwidth,sep=10pt,rounded=true,shadow=true]{block body}
-  \centering\large
-  \textbf{Quel profil d'épaisseur de l'écran rend la rupture\\
-  la moins probable lors d'une chute,}\\[4pt]
-  \normalsize tout en gardant un centre fin ($\le 0{,}5$~mm) pour le toucher
-  et une masse raisonnable ?
-  \end{beamercolorbox}
-  \end{center}
-  \vspace{0.4cm}
-  \begin{center}
-  \begin{tikzpicture}[scale=1]
-    % trois coupes d'ecran : uniforme / parabolique / expo
-    \begin{scope}
-      \draw[verre,fill=verre!15](0,0) rectangle (2.4,0.4);
-      \node at (1.2,-0.35){\scriptsize uniforme ?};
-    \end{scope}
-    \begin{scope}[xshift=3.3cm]
-      \fill[verre!15] (0,0) .. controls (1.2,0.55) .. (2.4,0)
-                       -- (2.4,0.18) .. controls (1.2,0.6) .. (0,0.18) -- cycle;
-      \draw[verre] (0,0.18) .. controls (1.2,0.6) .. (2.4,0.18);
-      \draw[verre] (0,0)--(2.4,0);
-      \node at (1.2,-0.35){\scriptsize  plus épais au centre ?};
-    \end{scope}
-    \begin{scope}[xshift=6.6cm]
-      \fill[verre!15] (0,0) rectangle (2.4,0.2);
-      \fill[verre!15] (0,0.2) .. controls (1.2,0.0) .. (2.4,0.2) -- (2.4,0.2)--(0,0.2);
-      \draw[verre](0,0.6)--(0,0.2) (2.4,0.6)--(2.4,0.2);
-      \draw[verre](0,0.6) .. controls (1.2,0.2) .. (2.4,0.6);
-      \draw[verre](0,0)--(2.4,0);
-      \node at (1.2,-0.35){\scriptsize  plus épais aux bords ?};
-    \end{scope}
-  \end{tikzpicture}
-  \end{center}
+% ===================== Slide : Plan =====================
+\begin{frame}{Plan}
+  \vfill
+  \Large
+  \begin{enumerate}[leftmargin=2.4em,itemsep=12pt,
+                    label=\textcolor{verre}{\bfseries\arabic*.}]
+    \item Le \textbf{modèle} utilisé
+    \item Les \textbf{paramètres} et les \textbf{lois} utilisées
+    \item L'\textbf{étude théorique} des fissures de bords
+    \item La \textbf{validation expérimentale}
+    \item La \textbf{conclusion}
+  \end{enumerate}
+  \vfill
 \end{frame}
 
-% ===================== Slide 4 : la demarche =====================
-\begin{frame}{Notre démarche en une image}
-  \begin{center}
-  \begin{tikzpicture}[node distance=0.5cm and 0.7cm,
-      box/.style={draw,rounded corners,fill=verre!10,align=center,
-                  minimum height=1.1cm,text width=2.5cm,font=\footnotesize},
-      ar/.style={-{Latex},thick,verre}]
-    \node[box](m){\textbf{1. Modèle}\\ poutre + énergie\\ $\sigma \propto 1/\sqrt{e}$};
-    \node[box,right=of m](v){\textbf{2. Validation}\\ analogie circuit RLC};
-    \node[box,right=of v](s){\textbf{3. Simulation}\\ Monte-Carlo\\ $P(\text{rupture})$};
-    \node[box,right=of s](e){\textbf{4. Expérience}\\ son + FFT\\ carte de rigidité};
-    \draw[ar](m)--(v); \draw[ar](v)--(s); \draw[ar](s)--(e);
-  \end{tikzpicture}
-  \end{center}
-  \vspace{0.3cm}
-  \centering\small Un seul fil conducteur : \textcolor{verre}{comprendre} $\rightarrow$
-  \textcolor{verre}{vérifier} $\rightarrow$ \textcolor{verre}{quantifier} $\rightarrow$
-  \textcolor{verre}{tester}.
+
+\begin{frame}{Cadre théorique --- la contrainte locale}
+  \footnotesize
+  Quand l'écran \textbf{plie}, ses fibres du haut se \textbf{compriment}, celles
+  du bas s'\textbf{étirent} ; le milieu ne change pas. On zoome sur une
+  \textbf{tranche} pour voir la contrainte.
+  \vspace{0.25cm}
+  \begin{columns}[c]
+
+  % ===================== Définitions des grandeurs =====================
+
+% ---------- 1. Élasticité ----------
+\begin{frame}{Grandeurs de l'élasticité}
+  \large
+  \begin{itemize}\setlength{\itemsep}{14pt}
+    \item \textbf{Contrainte} $\;\sigma=\dfrac{F}{S}\;$ : force interne par unité
+          de surface (en Pa).
+    \item \textbf{Déformation} $\;\varepsilon=\dfrac{\Delta L}{L}\;$ : allongement
+          relatif (sans dimension).
+    \item \textbf{Module d'Young} $\;\sigma=E\,\varepsilon\;$ : rigidité du matériau.
+    \item \textbf{Coefficient de Poisson} $\;\varepsilon_{\perp}=-
+u\,\varepsilon\;$ :
+          contraction transverse.
+  \end{itemize}
 \end{frame}
+
+% ---------- 2. Flexion ----------
+\begin{frame}{Grandeurs de la flexion}
+  \large
+  \begin{itemize}\setlength{\itemsep}{14pt}
+    \item \textbf{Moment quadratique} $\;I=\displaystyle\int_{S} y^{2}\,\mathrm{d}S\;$ :
+          résistance géométrique de la section à la flexion.
+    \item \textbf{Courbure} $\;\kappa=\dfrac{1}{R}\approx u_y''\;$ : degré de
+          courbure de la fibre neutre.
+    \item \textbf{Moment fléchissant} $\;M=\dfrac{EI}{R}\;$ : effort de flexion
+          subi par la section.
+    \item \textbf{Déformée} $\;u_y(x)\;$ telle que $\;EI\,u_y''=M(x)\;$ :
+          déplacement vertical de la fibre neutre.
+  \end{itemize}
+\end{frame}
+
+% ---------- 3. Choc et rupture ----------
+\begin{frame}{Grandeurs du choc et de la rupture}
+  \large
+  \begin{itemize}\setlength{\itemsep}{14pt}
+    \item \textbf{Raideur} $\;k=\dfrac{F}{u_{\max}}\;$ : force nécessaire par
+          unité de fléche.
+    \item \textbf{Énergie cinétique} $\;E_c=\tfrac12 m v^{2}=mgh\;$ (avec
+          $v=\sqrt{2gh}$) : énergie à l'impact.
+    \item \textbf{Fraction d'énergie} $\;\eta\;$ telle que
+          $\;\tfrac12 k\,u_{\max}^{2}=\eta E_c\;$ : part stockée en flexion.
+    \item \textbf{Seuil de rupture} $\;\sigma_c\;$ : la rupture survient si
+          $\;\sigma_{\max}>\sigma_c$.
+  \end{itemize}
+\end{frame}
+
+
+  % ---------- (A) l'ecran qui plie ----------
+  \column{0.31\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.8]
+      \fill[gristik](0,0.45)--(-0.18,0.2)--(0.18,0.2)--cycle;
+      \fill[gristik](3,0.45)--(2.82,0.2)--(3.18,0.2)--cycle;
+      \fill[verre!15] (0,0.6) .. controls (1.5,0.0) .. (3,0.6)
+        -- (3,0.4) .. controls (1.5,-0.2) .. (0,0.4) -- cycle;
+      \draw[verre,thick](0,0.6) .. controls (1.5,0.0) .. (3,0.6);
+      \draw[verre,thick](0,0.4) .. controls (1.5,-0.2) .. (3,0.4);
+      \draw[-{Latex},danger,thick](1.5,1.4)--(1.5,0.25);
+      
+ode[danger,font=\tiny] at (1.5,1.6){choc};
+      
+ode[ok,font=\tiny] at (2.55,0.95){comprimé};
+      
+ode[danger,font=\tiny] at (1.5,-0.55){étiré (tendu)};
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize l'écran plie}
+
+  % ---------- fleche + (B) la tranche ----------
+  \column{0.34\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.95]
+      
+ode[font=\tiny] at (-0.6,1.4){$\Rightarrow$};
+      \draw[verre,thick,fill=verre!10](0,0) rectangle (0.5,2.8);
+      \draw[{Latex}-{Latex}](-0.25,0)--(-0.25,2.8) node[midway,left,font=\tiny]{$e$};
+      \fill[ok!25](0.5,1.4)--(2.0,2.8)--(0.5,2.8)--cycle;
+      \fill[danger!25](0.5,1.4)--(2.0,0)--(0.5,0)--cycle;
+      \draw[thick](2.0,2.8)--(0.5,1.4)--(2.0,0);
+      \draw[dashed](0,1.4)--(2.4,1.4);
+      
+ode[font=\tiny,right] at (2.0,1.4){$\sigma=0$};
+      
+ode[ok,font=\tiny] at (1.2,3.05){comprimé};
+      
+ode[danger,font=\tiny] at (1.15,-0.25){tendu : casse ici};
+      
+ode[font=\tiny,right] at (2.0,2.7){$\sigma_{\max}$};
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize contrainte dans une tranche}
+
+  % ---------- (C) texte + formule ----------
+  \column{0.35\textwidth}
+    \footnotesize
+    La contrainte $\sigma$ varie \textbf{linéairement} dans l'épaisseur :
+    \begin{itemize}
+      \item \textbf{nulle} au milieu,
+      \item \textbf{maximale en surface}.
+    \end{itemize}
+    Avec $\kappa$ la \textbf{courbure} et $z$ la distance au milieu :
+    \[ \sigma(z)=E\,z\,\kappa \]
+    \[ \boxed{\;\sigma_{\max}=E\,\tfrac{e}{2}\,\kappa\;} \]
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Cadre théorique --- la contrainte locale}
+  \footnotesize
+  L'écran \textbf{plie} : une face se comprime, l'autre se tend. On zoome sur une
+  \textbf{tranche} (épaisseur \textbf{agrandie}) pour voir la contrainte.
+  \vspace{0.3cm}
+  \begin{columns}[c]
+
+  % ---------- (A) l'ecran qui plie ----------
+  \column{0.4\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.85]
+      \fill[gristik](0,0.45)--(-0.18,0.2)--(0.18,0.2)--cycle;
+      \fill[gristik](3,0.45)--(2.82,0.2)--(3.18,0.2)--cycle;
+      \fill[verre!15] (0,0.6) .. controls (1.5,0.0) .. (3,0.6)
+        -- (3,0.4) .. controls (1.5,-0.2) .. (0,0.4) -- cycle;
+      \draw[verre,thick](0,0.6) .. controls (1.5,0.0) .. (3,0.6);
+      \draw[verre,thick](0,0.4) .. controls (1.5,-0.2) .. (3,0.4);
+      \draw[-{Latex},danger,thick](1.5,1.4)--(1.5,0.25);
+      
+ode[danger,font=\tiny] at (1.5,1.6){choc};
+      
+ode[ok,font=\tiny] at (2.65,1.0){haut comprimé};
+      
+ode[danger,font=\tiny] at (1.5,-0.55){bas tendu};
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize l'écran plie}
+
+  % ---------- (B) la tranche : profil de contrainte par fleches ----------
+  \column{0.6\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=1]
+      % barre = epaisseur e (verticale, agrandie)
+      \draw[verre,thick,fill=verre!10](0,-1.5) rectangle (0.7,1.5);
+      \draw[{Latex}-{Latex}](-0.35,-1.5)--(-0.35,1.5) node[midway,left,font=\tiny]{$e$};
+      % axe neutre
+      \draw[dashed](0,0)--(3.4,0);
+      
+ode[font=\tiny,right] at (2.2,0){milieu : $\sigma=0$};
+      % compression (haut) : fleches vertes vers la face, longueur ~ z
+      \foreach \z/\l in {0.4/0.35,0.8/0.7,1.2/1.05,1.5/1.3}{
+        \draw[-{Latex},ok](0.7+\l,\z)--(0.7,\z);}
+      % traction (bas) : fleches rouges depuis la face, longueur ~ z
+      \foreach \z/\l in {0.4/0.35,0.8/0.7,1.2/1.05,1.5/1.3}{
+        \draw[-{Latex},danger](0.7,-\z)--(0.7+\l,-\z);}
+      
+ode[ok,font=\tiny,right] at (2.0,1.5){comprimé ($\sigma_{\max}$)};
+      
+ode[danger,font=\tiny,right] at (2.0,-1.5){tendu ($\sigma_{\max}$) : casse};
+    \end{tikzpicture}\\[3pt]
+    {\scriptsize contrainte dans la tranche (longueur des flèches $=$ contrainte)}
+  \end{columns}
+  \vspace{0.15cm}
+  \centering\footnotesize
+  $\sigma$ croît linéairement du milieu vers la surface :
+  $\;\sigma(z)=E\,z\,\kappa\;\Rightarrow\;\boxed{\sigma_{\max}=E\,\tfrac{e}{2}\,\kappa}$
+  \;($\kappa$ : courbure).
+\end{frame}
+
+
+\begin{frame}{Loi 1 --- élasticité linéaire (Hooke)}
+  \footnotesize
+  Tant que les déformations restent petites, contrainte et déformation sont
+  proportionnelles :
+  \[ \sigma = E\,\varepsilon \qquad\text{(1D)},\qquad
+     \varepsilon_{\!\perp} = -
+u\,\varepsilon \quad\text{(effet Poisson)}. \]
+  Pour une \textbf{plaque}, la rigidité effective devient $E/(1-
+u^{2})$.
+  \begin{itemize}
+    \item $E$ : \textbf{module d'Young} $=73$~GPa (rigidité du verre).
+    \item $
+u$ : \textbf{coefficient de Poisson} $=0{,}22$.
+  \end{itemize}
+  \centering\textcolor{danger}{Domaine de validité : petites déformations, pas de
+  plasticité --- ce qui est exact pour le verre (matériau \textbf{fragile}).}
+\end{frame}
+
+\begin{frame}{Loi 2 --- théorie des poutres (Euler--Bernoulli)}
+  \begin{columns}[c]
+  \column{0.55\textwidth}
+    \footnotesize
+    \textbf{Hypothèse :} les sections droites restent planes et perpendiculaires
+    à la fibre moyenne. On en déduit la relation \textbf{moment--courbure} :
+    \[ M = E\,I\,\kappa,\qquad
+       I=\int_{S} z^{2}\,\mathrm{d}A=\frac{b\,e^{3}}{12} \]
+    d'où la contrainte locale en fonction du \textbf{moment fléchissant} $M$ :
+    \[ \sigma(z)=\frac{M\,z}{I}\;\Rightarrow\;
+       \sigma_{\max}=\frac{6M}{b\,e^{2}}. \]
+  \column{0.45\textwidth}
+    \scriptsize
+    Paramètres introduits :
+    \begin{itemize}
+      \item $I$ : \textbf{moment quadratique} (m$^4$)
+      \item $M$ : moment fléchissant (N$\cdot$m)
+      \item $b$ : largeur, $e$ : épaisseur
+      \item $L$ : portée (distance entre appuis)
+    \end{itemize}
+    \centering\vspace{4pt}
+    \textbf{\textcolor{verre}{$I\propto e^{3}$}}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Loi 3 --- théorème de l'énergie cinétique}
+  \footnotesize
+  À l'impact, l'énergie cinétique acquise pendant la chute vaut
+  \[ E_c=\tfrac12 m v^{2},\qquad v=\sqrt{2gh}. \]
+  Une fraction $\eta$ est stockée en \textbf{énergie élastique de flexion}
+  (modèle de l'oscillateur) :
+  \[ \tfrac12\,k\,x_{\max}^{2}=\eta\,E_c
+     \;\Rightarrow\; x_{\max}=\sqrt{\frac{2\eta E_c}{k}},\qquad
+     k=\frac{48\,E\,I}{L^{3}}. \]
+  \begin{itemize}
+    \item $m=180$~g, $h\sim 1$~m, $\eta\approx 5\%$ ;
+    \item $k$ : \textbf{raideur} équivalente ($\propto e^{3}$), $x_{\max}$ : fléche.
+  \end{itemize}
+  \centering\textcolor{danger}{$\eta$ remplace le calcul détaillé du contact
+  (hypothèse forte, assumée).}
+\end{frame}
+
 
 
 % ===================== Slide 5 : la chute =====================
@@ -264,27 +498,97 @@
 \end{frame}
 
 % ===================== Slide 8 : raideur ~ e^3 =====================
-\begin{frame}{Étape 4 --- Plus c'est épais, beaucoup plus c'est rigide}
+\begin{frame}{Étape 4a --- La raideur : qu'est-ce que c'est ?}
+  \footnotesize
+  La \textbf{raideur} $k$ mesure la résistance à la flexion. Sous une force $F$,
+  l'écran s'enfonce d'une fléche $x$ telle que :
+  \[ F = k\,x \qquad\text{(plus } k \text{ est grand, moins ça plie).} \]
+  \vspace{0.2cm}
+  \begin{center}
+  \begin{minipage}{0.45\textwidth}\centering
+    \begin{tikzpicture}[scale=0.85]
+      \fill[gristik](0,0)--(-0.2,-0.35)--(0.2,-0.35)--cycle;
+      \fill[gristik](3,0)--(2.8,-0.35)--(3.2,-0.35)--cycle;
+      \draw[thick](-0.4,-0.35)--(3.4,-0.35);
+      \draw[verre,very thick](0,0) .. controls (1.5,-0.95) .. (3,0);
+      \draw[-{Latex},danger,thick](1.5,0.7)--(1.5,-0.5);
+      \draw[{Latex}-{Latex}](3.3,0)--(3.3,-0.75) node[midway,right,font=\tiny]{$x$ grand};
+    \end{tikzpicture}\\[3pt]
+    \scriptsize Écran \textbf{fin} : fléchit beaucoup ($k$ faible)
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.45\textwidth}\centering
+    \begin{tikzpicture}[scale=0.85]
+      \fill[gristik](0,0)--(-0.2,-0.35)--(0.2,-0.35)--cycle;
+      \fill[gristik](3,0)--(2.8,-0.35)--(3.2,-0.35)--cycle;
+      \draw[thick](-0.4,-0.35)--(3.4,-0.35);
+      \draw[verre,very thick](0,0) .. controls (1.5,-0.25) .. (3,0);
+      \draw[-{Latex},danger,thick](1.5,0.7)--(1.5,-0.05);
+      \draw[{Latex}-{Latex}](3.3,0)--(3.3,-0.2) node[midway,right,font=\tiny]{$x$ petit};
+    \end{tikzpicture}\\[3pt]
+    \scriptsize Écran \textbf{épais} : fléchit peu ($k$ élevé)
+  \end{minipage}
+  \end{center}
+\end{frame}
+
+\begin{frame}{Étape 4b --- D'où vient la puissance $e^3$ ?}
   \begin{columns}[c]
-  \column{0.4\textwidth}
+  \column{0.42\textwidth}
     \centering
     \begin{tikzpicture}[scale=1]
-      % section rectangulaire b x e
-      \draw[verre,thick,fill=verre!12](0,0) rectangle (2.2,0.7);
-      \draw[{Latex}-{Latex}](0,-0.25)--(2.2,-0.25) node[midway,below]{\footnotesize largeur $b$};
-      \draw[{Latex}-{Latex}](2.45,0)--(2.45,0.7) node[midway,right]{\footnotesize épaisseur $e$};
-      \node at (1.1,1.2){\footnotesize section de la poutre};
+      \draw[verre,thick,fill=verre!10](0,0) rectangle (1.2,2);
+      \draw[dashed](-0.4,1)--(1.6,1) node[right,font=\tiny]{axe neutre};
+      \draw[danger,thick](0,1.6)--(1.2,1.6);
+      \draw[{Latex}-{Latex}](1.35,1)--(1.35,1.6) node[midway,right,font=\tiny]{$y$};
+      \draw[-{Latex},ok](-0.05,1.95)--(0.3,1.95);
+      \draw[-{Latex},ok](1.25,1.95)--(0.9,1.95);
+      \draw (0.6,2.2) node[ok,font=\tiny]{compression};
+      \draw[-{Latex},danger](0.3,0.1)--(-0.05,0.1);
+      \draw[-{Latex},danger](0.9,0.1)--(1.25,0.1);
+      \draw (0.6,-0.15) node[danger,font=\tiny]{traction};
+      \draw[{Latex}-{Latex}](0,-0.45)--(1.2,-0.45) node[midway,below,font=\tiny]{$b$};
+      \draw[{Latex}-{Latex}](-0.4,0)--(-0.4,2) node[midway,left,font=\tiny]{$e$};
     \end{tikzpicture}
-  \column{0.6\textwidth}
-    \begin{block}{RDM : moment quadratique et raideur}
-    \[ I=\frac{b\,e^{3}}{12} \qquad
-       k=\frac{48\,E\,I}{L^{3}}=\frac{4\,E\,b}{L^{3}}\;e^{3} \]
-    \end{block}
-    \begin{center}
-    \fbox{\textcolor{verre}{$\;k \propto e^{3}\;$}}\quad
-    \footnotesize doubler l'épaisseur $\Rightarrow$ raideur $\times 8$ !
-    \end{center}
-    \footnotesize $E$ : rigidité du verre (module d'Young, $\approx 73$~GPa).
+  \column{0.58\textwidth}
+    \footnotesize
+    \begin{itemize}
+      \item En pliant, les fibres du \textbf{haut} se compriment, celles du
+            \textbf{bas} s'étirent ; le milieu (\textbf{axe neutre}) ne bouge pas.
+      \item Une fibre à distance $y$ résiste d'autant plus qu'elle est loin :
+            sa contribution varie comme $y^2$ (force $\propto y$, bras de
+            levier $\propto y$).
+      \item En sommant $y^2$ sur toute la hauteur $e$ (largeur $b$) :
+      \[ I=\int y^{2}\,\mathrm{d}A=\frac{b\,e^{3}}{12} \]
+      \item \textbf{C'est l'intégration sur la hauteur qui fait apparaître $e^3$.}
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Étape 4c --- De $I$ à la raideur : $k\propto e^3$}
+  \begin{columns}[c]
+  \column{0.55\textwidth}
+    \footnotesize
+    Pour une poutre sur deux appuis (charge au centre), la fléche vaut
+    $x = \dfrac{F L^{3}}{48\,E\,I}$. La raideur en découle :
+    \[ k=\frac{F}{x}=\frac{48\,E\,I}{L^{3}}
+        =\frac{48\,E}{L^{3}}\cdot\frac{b\,e^{3}}{12}
+        =\frac{4\,E\,b}{L^{3}}\;e^{3} \]
+    \begin{center}\fbox{\textcolor{verre}{$\;k \propto e^{3}\;$}}\end{center}
+    \textbf{Conséquence :} doubler l'épaisseur multiplie la raideur par
+    $2^{3}=8$.\\[2pt]
+    $E$ = module d'Young du verre ($\approx 73$~GPa).
+  \column{0.45\textwidth}
+    \centering
+    \begin{tikzpicture}[scale=0.4]
+      \draw[-{Latex}](0,0)--(0,9.5) node[above,font=\scriptsize]{$k$};
+      \fill[verre!50](0.6,0) rectangle (2.0,1);
+      \fill[verre](3.4,0) rectangle (4.8,8);
+      \draw (1.3,0) node[below,font=\scriptsize]{$e$};
+      \draw (4.1,0) node[below,font=\scriptsize]{$2e$};
+      \draw (1.3,1) node[above,font=\scriptsize]{$k$};
+      \draw (4.1,8) node[above,font=\scriptsize]{$8k$};
+    \end{tikzpicture}\\[2pt]
+    \scriptsize $\times 2$ épaisseur $\Rightarrow \times 8$ raideur
   \end{columns}
 \end{frame}
 
@@ -310,7 +614,7 @@
        \;\Rightarrow\; x_{\max}=\sqrt{\dfrac{2\,\eta\,E_c}{k}} \]
     \end{block}
     \footnotesize
-    \textcolor{danger}{\textbf{Hypothèse à défendre :}} on \emph{admet}
+    \textcolor{danger}{\textbf{:}} on \emph{admet}
     $\eta\approx 5\%$ (le reste part en rebond, son, déformation du
     téléphone). Cela évite le calcul compliqué du contact.
   \end{columns}
@@ -940,7 +1244,7 @@ ode[danger,font=\tiny,left] at (0,1.1){$u_{C,\max}$};
 \end{frame}
 
 % ---------- 6) Resultat attendu ----------
-\begin{frame}{Résultat attendu : la pente $-1/2$}
+\begin{frame}{Résultat attendu (Experience à réaliser) la pente $-1/2$}
   \begin{columns}[c]
   \column{0.5\textwidth}
     \centering
